@@ -102,7 +102,7 @@ export default function CheckoutModal({ isOpen, onClose, orderDetails }) {
         alert('Transaction failed: ' + error.message);
       }
     },
-    onSuccess: (tx, data) => {
+    onSuccess: (data) => {
       console.log('Transaction successful:', data);
     },    
   });
@@ -110,7 +110,7 @@ export default function CheckoutModal({ isOpen, onClose, orderDetails }) {
   const intentIdValue = nextIntentId?.data;
   const ethUsdRate = 3050;
 
-  const { data, writeContractAsync } = useWriteContract({enabled: isClient,});
+  const { writeContractAsync } = useWriteContract({enabled: isClient,});
 
   const handleWrite = async () => {
 
