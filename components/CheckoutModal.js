@@ -159,10 +159,18 @@ export default function CheckoutModal({ isOpen, onClose, orderDetails }) {
     console.log('handleSubmit is called!')
 
     try {
-      const res = await fetch('/api/publish', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [formattedShippingDetails, itemMetadata?.url] }),
+      const res = await fetch("/api/intents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          intentId: Number(intentIdValue),
+          buyer: {
+            walletAddress: address,
+            productLink: formattedShippingDetails,
+            shippingAddress: itemMetadata?.url,
+            quantity: Number(quantity),
+          },
+        }),
       });
 
       const data = await res.json();
@@ -269,7 +277,7 @@ export default function CheckoutModal({ isOpen, onClose, orderDetails }) {
             <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700 dark:text-neutral-200">
               <div className="flex items-center justify-between w-full">
                 <span>
-                  Fees you need to pay at most <span className="text-xs">(Solver + Shipping + Taxes)</span>
+                  Fees you need to pay <em>at most</em> <span className="text-xs">(Solver + Shipping + Taxes)</span>
                 </span>
                 <span>{formattedFees}</span>
               </div>

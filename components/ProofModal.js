@@ -14,24 +14,40 @@ export default function ProofModal({
   requestUrl,
   activeModal
 }) {
-  const [strings, setStrings] = useState([]);
+  const [intentData, setIntentData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isModalOpen) return;
-    const fetchStrings = async () => {
+    if (!isModalOpen || !selectedItem) return;
+    
+    const fetchIntentData = async () => {
+      setLoading(true);
+      setError(null);
+      
       try {
-        const res = await fetch('/api/strings');
+        const res = await fetch(`/api/intents?intent_id=${selectedItem.intentId}`);
         if (!res.ok) {
-          throw new Error('Failed to fetch strings');
+          throw new Error('Failed to fetch intent data');
         }
-        const data = await res.json();
-        setStrings(data);
+        const responseData = await res.json();
+        
+        // Check if we have data in the response
+        if (responseData.data && responseData.data.length > 0) {
+          setIntentData(responseData.data[0]);
+        } else {
+          setError('Intent data not found');
+        }
       } catch (err) {
-        console.log(err.message);
+        console.error(err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchStrings();
-  }, [isModalOpen]);
+    
+    fetchIntentData();
+  }, [isModalOpen, selectedItem]);
 
   // If the modal isn't open, don't render anything
   if (!isModalOpen) return null;
@@ -40,42 +56,39 @@ export default function ProofModal({
     return (
       <div className="p-4 sm:p-7 overflow-y-auto max-h-[80vh]">
         <div className="text-center">
-          {strings && selectedItem ? (
+          {intentData ? (
             <div className="grid grid-rows-2">
               <h3
                 id="hs-ai-invoice-modal-label"
                 className="text-lg font-semibold text-gray-800"
               >
-                {strings[selectedItem.intentId - 1]?.messages[0] ? (
-                  strings[selectedItem.intentId - 1]?.messages[0]
+                {intentData.shipping_address ? (
+                  intentData.shipping_address
                 ) : (
                   <div className="flex justify-center animate-pulse bg-gray-200 w-[60px] h-[20px] rounded flex items-center justify-center">
-                    <span className="text-gray-400 text-sm">Loading...</span>
+                    <span className="text-gray-400 text-sm">No address available</span>
                   </div>
                 )}
               </h3>
-              <a
-                id="hs-ai-invoice-modal-label"
-                className="text-md font-semibold text-blue-500 underline"
-                href={strings[selectedItem.intentId - 1]?.messages[1]}
-                target="_blank"
-              >
-                {strings[selectedItem.intentId - 1]?.messages[1].slice(0, 48) ? (
-                  strings[selectedItem.intentId- 1]?.messages[1].slice(0, 48)
-                ) : (
-                  <div className="flex justify-center animate-pulse bg-gray-200 w-[60px] h-[20px] rounded flex items-center justify-center">
-                    <span className="text-gray-400 text-sm">Loading...</span>
-                  </div>
-                )}
-                ...
-              </a>
+              {intentData.product_link && (
+                <a
+                  id="hs-ai-invoice-modal-label"
+                  className="text-md font-semibold text-blue-500 underline"
+                  href={intentData.product_link}
+                  target="_blank"
+                >
+                  {intentData.product_link.slice(0, 48)}...
+                </a>
+              )}
             </div>
-          ) : (
-            // Skeleton placeholder while we have no strings
+          ) : loading ? (
+            // Skeleton placeholder while loading
             <div className="animate-pulse bg-gray-200 w-[250px] h-[50px] rounded flex items-center justify-center">
               <span className="text-gray-400 text-sm">Loading...</span>
             </div>
-          )}
+          ) : error ? (
+            <div className="text-red-500">{error}</div>
+          ) : null}
           <p className="text-sm text-gray-500">
             {selectedItem
               ? `Intent ID: ${selectedItem.intentId}`
@@ -171,10 +184,6 @@ export default function ProofModal({
             >
               Close
             </button>
-
-            {/* <button className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none">
-              Claim
-            </button> */}
           </div>
         </div>
     )
@@ -248,12 +257,14 @@ export default function ProofModal({
               type="button"
               onClick={onClose}
               className="flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-white/70 hover:bg-white/10 focus:outline-none focus:bg-white/10"
-              aria-label="Close"
             >
               <span className="sr-only">Close</span>
               <svg
-                className="shrink-0 w-4 h-4"
+                className="flex-shrink-0 size-4"
                 xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -266,32 +277,19 @@ export default function ProofModal({
             </button>
           </div>
 
-          {/* SVG wave background */}
-          <figure className="absolute inset-x-0 bottom-0">
-            <svg
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 1920 100.1"
-            >
-              <path
-                fill="currentColor"
-                className="fill-white"
-                d="M0,0c0,0,934.4,93.4,1920,0v100.1H0L0,0z"
-              ></path>
-            </svg>
-          </figure>
-        </div>
-
-        {/* Icon in the circle */}
-        <div className="relative z-10 -mt-12 flex justify-center">
-          <span className="flex justify-center items-center w-[62px] h-[62px] rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm">
-            <ScanQrCodeIcon size={25} />
+          {/* Icon */}
+          <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 size-20 flex justify-center items-center rounded-full border-4 border-white text-white">
+            <ScanQrCodeIcon size={40} />
           </span>
+
+          {/* Background Radials */}
+          <div className="absolute top-0 inset-0">
+            <div className="bg-gradient-to-tr from-blue-900 via-gray-900 to-gray-900 w-full h-full opacity-90"></div>
+          </div>
         </div>
 
-        {/* Modal Body */}
+        {/* Content */}
         {renderModal()}
-        {/* End Body */}
       </div>
     </div>
   );

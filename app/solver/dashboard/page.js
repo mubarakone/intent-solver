@@ -26,7 +26,7 @@ export default function SolverDashboard() {
   const [isTableLoading, setIsTableLoading] = useState(true);
   const [activeModal, setActiveModal] = useState("Idle")
 
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const publicClient = usePublicClient();
 
   const { writeContractAsync } = useWriteContract({
@@ -189,6 +189,30 @@ export default function SolverDashboard() {
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   };
 
+  const publishSolver = async () => {
+    const { deliveryDate, productLink } = proofs;
+
+    try {
+      console.log('Publishing solver data...');
+      const res = await fetch('/api/intents', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          intentId: Number(intentId),
+          solver: {
+            walletAddress: address,
+            deliveryDate,
+          }
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Publish failed');
+      console.log('Solver data published successfully!');
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
   const handleSimulateWrite = async (args) => {
     const abi = parseAbi([
         'function submitProof(uint256 _intentId, bytes32 _solverHashedProductLink, bytes32 _solverHashedShippingAddr, uint256 _finalPrice)'
@@ -227,6 +251,7 @@ export default function SolverDashboard() {
         gasLimit: '3000000',
       });
       console.log('Transaction submitted: ', tx);
+      publishSolver();
       setActiveModal('Success') 
     } catch (error) {
       console.error('Transaction error: ', error.message);
