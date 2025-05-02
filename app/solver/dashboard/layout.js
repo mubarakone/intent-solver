@@ -120,7 +120,16 @@ export default function Layout({ children }) {
               </button>
 
               {/* Replace avatar dropdown with RainbowKit ConnectButton */}
-              <ConnectButton />
+              <ConnectButton 
+                accountStatus={{
+                  smallScreen: 'avatar',
+                  largeScreen: 'full',
+                }}
+                showBalance={{
+                  smallScreen: false,
+                  largeScreen: true,
+                }}
+              />
             </div>
           </div>
         </nav>

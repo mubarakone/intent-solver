@@ -168,13 +168,9 @@ export default function CheckoutForm({ onSubmit, onOpenModal }) {
 
   return (
     <LoadScript googleMapsApiKey={YOUR_GOOGLE_API_KEY} libraries={['places']}>
-      {/* 
-        Container with spacing so it matches your original layout,
-        but no border, no card outline, no title/subtitle.
-      */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* First & Last Name row */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* First & Last Name row - stacked on mobile, side by side on larger screens */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label
               htmlFor="firstName"
@@ -216,17 +212,20 @@ export default function CheckoutForm({ onSubmit, onOpenModal }) {
           </div>
         </div>
 
-        {/* Address + Autocomplete */}
+        {/* Address with autocomplete - full width */}
         <div>
           <label
             htmlFor="address"
             className="block text-sm font-medium text-gray-700"
           >
-            Address
+            Street Address
           </label>
           <Autocomplete
-            onLoad={(autocomplete) => (window.autocomplete = autocomplete)}
+            onLoad={(autocomplete) => {
+              window.autocomplete = autocomplete;
+            }}
             onPlaceChanged={handlePlaceSelect}
+            fields={["address_components", "formatted_address"]}
           >
             <input
               type="text"
@@ -236,105 +235,109 @@ export default function CheckoutForm({ onSubmit, onOpenModal }) {
               onChange={handleChange}
               required
               className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
-                         rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
-              placeholder="Street address"
+                       rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
+              placeholder="Start typing your address"
             />
           </Autocomplete>
         </div>
 
-        {/* City */}
-        <div>
-          <label
-            htmlFor="city"
-            className="block text-sm font-medium text-gray-700"
-          >
-            City
-          </label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            required
-            className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
+        {/* City and State - stacked on mobile, side by side on larger screens */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="city"
+              className="block text-sm font-medium text-gray-700"
+            >
+              City
+            </label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              required
+              className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
                        rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
-            placeholder="Enter city"
-          />
+              placeholder="City"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="state"
+              className="block text-sm font-medium text-gray-700"
+            >
+              State
+            </label>
+            <input
+              type="text"
+              id="state"
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+              required
+              className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
+                       rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
+              placeholder="State"
+            />
+          </div>
         </div>
 
-        {/* State */}
-        <div>
-          <label
-            htmlFor="state"
-            className="block text-sm font-medium text-gray-700"
-          >
-            State
-          </label>
-          <input
-            type="text"
-            id="state"
-            name="state"
-            value={formData.state}
-            onChange={handleChange}
-            required
-            className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
+        {/* Zip Code and Country - stacked on mobile, side by side on larger screens */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="zipCode"
+              className="block text-sm font-medium text-gray-700"
+            >
+              ZIP Code
+            </label>
+            <input
+              type="text"
+              id="zipCode"
+              name="zipCode"
+              value={formData.zipCode}
+              onChange={handleChange}
+              required
+              className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
                        rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
-            placeholder="Enter state"
-          />
+              placeholder="ZIP Code"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="country"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Country
+            </label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+              required
+              className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
+                       rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
+              placeholder="Country"
+            />
+          </div>
         </div>
 
-        {/* Zip */}
-        <div>
-          <label
-            htmlFor="zipCode"
-            className="block text-sm font-medium text-gray-700"
+        {/* Submit Button - full width with better spacing */}
+        <div className="mt-6">
+          <button
+            type="submit"
+            className="py-3 px-4 w-full inline-flex justify-center items-center gap-2 rounded-md border border-transparent 
+                     font-semibold bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 
+                     focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm"
           >
-            Zip Code
-          </label>
-          <input
-            type="text"
-            id="zipCode"
-            name="zipCode"
-            value={formData.zipCode}
-            onChange={handleChange}
-            required
-            className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
-                       rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
-            placeholder="12345"
-          />
+            Place Order
+          </button>
         </div>
-
-        {/* Country */}
-        <div>
-          <label
-            htmlFor="country"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Country
-          </label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            value={formData.country}
-            onChange={handleChange}
-            required
-            className="py-2 px-3 block w-full border-gray-200 shadow-sm text-sm 
-                       rounded-lg focus:border-blue-500 focus:ring-blue-500 mt-1"
-            placeholder="USA"
-          />
-        </div>
-
-        {/* Full-width Button */}
-        <button
-          type="submit"
-          className="w-full py-2 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium
-                     rounded-lg border border-transparent bg-blue-600 text-white
-                     hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-        >
-          Complete Checkout
-        </button>
       </form>
     </LoadScript>
   );

@@ -39,40 +39,89 @@ export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, 
     }
   }, [quantity, metadata, findTotalPrice]);
 
+  // Truncate long titles for mobile display
+  const truncateTitle = (title, maxLength = 60) => {
+    if (!title) return '';
+    return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
+  };
+
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 relative">
+    <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 relative">
       <button
         onClick={onDiscard}
         className="absolute top-2 right-2 text-red-500 hover:text-red-700"
         aria-label="Discard order"
       >
-        <Trash2 size={20} />
+        <Trash2 size={18} className="sm:size-5" />
       </button>
-      <div className="flex items-center">
-        <img src={metadata.image || "/placeholder.svg"} alt={metadata.title} className="w-20 h-20 object-cover mr-4" />
-        <div>
-          <a href={metadata.url} className="text-blue-500 text-xl underline font-semibold" target="_blank">{metadata.title}</a>
-          <p className="text-gray-700 flex-grow">{metadata.description}</p>
+
+      {/* Mobile layout (stacked) */}
+      <div className="flex flex-col sm:hidden">
+        <div className="flex items-center mb-3">
+          <img 
+            src={metadata.image || "/placeholder.svg"} 
+            alt={metadata.title} 
+            className="w-16 h-16 object-cover mr-3 rounded-md" 
+          />
+          <div className="flex-1 min-w-0">
+            <a 
+              href={metadata.url} 
+              className="text-blue-500 text-sm font-semibold underline line-clamp-2 break-words" 
+              target="_blank"
+            >
+              {truncateTitle(metadata.title, 40)}
+            </a>
+          </div>
+        </div>
+        <p className="text-gray-700 text-xs mb-3">{truncateTitle(metadata.description, 80)}</p>
+        <div className="flex justify-between items-center">
+          <p className="text-gray-600 font-bold text-lg">{calculateTotalPrice()}</p>
+          <div className="flex items-center">
+            <label htmlFor="quantity-mobile" className="mr-2 text-xs font-medium text-gray-700">
+              Qty:
+            </label>
+            <select
+              id="quantity-mobile"
+              value={quantity}
+              onChange={handleQuantityChange}
+              className="block w-14 rounded-md border-gray-300 shadow-sm text-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            >
+              {[...Array(30)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
-      <div className="mt-4 flex justify-between items-center">
-        <p className="text-gray-600 font-bold text-xl">{calculateTotalPrice()}</p>
-        <div className="flex items-center ml-4">
-          <label htmlFor="quantity" className="mr-2 text-sm font-medium text-gray-700">
-            Qty:
-          </label>
-          <select
-            id="quantity"
-            value={quantity}
-            onChange={handleQuantityChange}
-            className="block w-16 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-          >
-            {[...Array(30)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1}
-              </option>
-            ))}
-          </select>
+
+      {/* Desktop layout (horizontal) */}
+      <div className="hidden sm:flex sm:items-center">
+        <img src={metadata.image || "/placeholder.svg"} alt={metadata.title} className="w-20 h-20 object-cover mr-4 rounded-md" />
+        <div className="flex-1">
+          <a href={metadata.url} className="text-blue-500 text-xl underline font-semibold" target="_blank">{metadata.title}</a>
+          <p className="text-gray-700 flex-grow">{metadata.description}</p>
+          <div className="mt-3 flex justify-between items-center">
+            <p className="text-gray-600 font-bold text-xl">{calculateTotalPrice()}</p>
+            <div className="flex items-center ml-4">
+              <label htmlFor="quantity-desktop" className="mr-2 text-sm font-medium text-gray-700">
+                Qty:
+              </label>
+              <select
+                id="quantity-desktop"
+                value={quantity}
+                onChange={handleQuantityChange}
+                className="block w-16 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              >
+                {[...Array(30)].map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>

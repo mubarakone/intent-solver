@@ -27,11 +27,9 @@ export default function Home() {
     setClientConnected(isConnected);
   }, [isConnected]);
 
-
   const handleProceedToCheckout = () => {
     setIsCheckoutStarted(true)
   }
-
   
   const handleDiscardOrder = () => {
     setItemMetadata(null)
@@ -87,20 +85,15 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    console.log(isModalOpen)
-  }, [isModalOpen])
-  
-
   return (
-    <main className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <form onSubmit={handleScrape} className="mb-8">
-          <div className="mt-10 w-full px-4 sm:px-6 lg:px-8">
+    <main className="bg-white py-5 sm:py-8 px-2 sm:px-4 lg:px-8 rounded-lg shadow-sm mb-2">
+      <div className="max-w-3xl mx-auto w-full">
+        <form onSubmit={handleScrape} className="mb-4">
+          <div className="w-full">
             <div className="relative">
               <input
                 type="text"
-                className="p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                className="p-3 sm:p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                 placeholder="Enter an Amazon link..."
                 value={amazonLink}
                 onChange={(e) => setAmazonLink(e.target.value)}
@@ -108,26 +101,35 @@ export default function Home() {
               <div className="absolute top-1/2 end-2 -translate-y-1/2">
                 <button
                   type="submit"
-                  className="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:bg-neutral-800 dark:hover:text-white dark:focus:text-white"
+                  className="size-8 sm:size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:bg-neutral-800 dark:hover:text-white dark:focus:text-white"
                 >
-                  <Search />
+                  <Search size={16} />
                 </button>
               </div>
             </div>
           </div>
         </form>
 
-        {error && <p className="text-red-500 mt-4">{error}</p>}
-        {itemMetadata && (
-          <AmazonItemCard
-            findTotalPrice={setTotalPrice}
-            metadata={itemMetadata}
-            onDiscard={handleDiscardOrder}
-            onQuantityChange={handleQuantityChange}
-          />
+        {loading && (
+          <div className="flex justify-center my-4">
+            <div className="animate-spin size-6 border-t-2 border-blue-600 rounded-full"></div>
+          </div>
         )}
 
-        <div className="mt-8">
+        {error && <p className="text-red-500 mt-4 text-sm">{error}</p>}
+        
+        {itemMetadata && (
+          <div className="mt-4">
+            <AmazonItemCard
+              findTotalPrice={setTotalPrice}
+              metadata={itemMetadata}
+              onDiscard={handleDiscardOrder}
+              onQuantityChange={handleQuantityChange}
+            />
+          </div>
+        )}
+
+        <div className="mt-6 sm:mt-8">
           {!isCheckoutStarted ? (
             <WalletButton
               isDisabled={!itemMetadata}
@@ -143,13 +145,8 @@ export default function Home() {
             />
           )}
         </div>
-
-        <div className="mt-12 text-center">
-          <a href="/solver" className="text-blue-500 hover:text-blue-700">
-            Are you a Solver? Log In Here
-          </a>
-        </div>
       </div>
+      
       <CheckoutModal
         key={isModalOpen ? "open" : "closed"}
         isOpen={isModalOpen}
@@ -162,7 +159,6 @@ export default function Home() {
           quantity,
           totalPrice,
           checkoutDetails,
-          // Add any other relevant details here
         }}
       />
     </main>
