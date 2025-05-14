@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 const metadata = {
-  title: "Intent Solver",
-  description: "Intent Solver PWA Application",
+  title: "Storerunner",
+  description: "Order from your favorite ecommerce platforms directly onchain without having to move any funds.",
 };
 
 const queryClient = new QueryClient()
@@ -33,16 +33,16 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="theme-color" content="#f3f4f6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="application-name" content="Intent Solver" />
-        <meta name="apple-mobile-web-app-title" content="Intent Solver" />
-        <meta name="description" content="Intent Solver PWA Application" />
+        <meta name="application-name" content="Storerunner" />
+        <meta name="apple-mobile-web-app-title" content="Storerunner" />
+        <meta name="description" content="Order from your favorite ecommerce platforms directly onchain without having to move any funds." />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#f3f4f6" />
         <meta name="msapplication-tap-highlight" content="no" />
         
         <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/icons/storerunner-icon.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

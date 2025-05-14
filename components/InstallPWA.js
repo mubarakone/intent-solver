@@ -52,8 +52,8 @@ export default function InstallPWA() {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-black text-white p-4 flex justify-between items-center">
       <div>
-        <p className="font-medium">Install Intent Solver App</p>
-        <p className="text-sm opacity-80">Access even when offline</p>
+        <p className="font-medium">Install Storerunner App</p>
+        <p className="text-sm opacity-80">Shop online directly from your crypto wallet</p>
       </div>
       <div className="flex gap-2">
         <button 
