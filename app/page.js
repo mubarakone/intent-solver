@@ -16,7 +16,7 @@ const FarcasterFrameMeta = dynamic(() => import('../components/FarcasterFrameMet
 // Create the Farcaster Frame meta content
 const frameEmbed = {
   version: 'vNext',
-  image: 'https://yourdomain.com/sharing-image.png', // Replace with actual image URL
+  image: 'https://storerunner.xyz/sharing-image.png', // Replace with actual image URL
   buttons: [{ label: 'Open App', target: '_blank' }],
   ogTitle: 'Storerunner',
   ogDescription: 'Order from your favorite ecommerce platforms directly onchain without having to move any funds.'

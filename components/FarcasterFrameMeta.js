@@ -10,8 +10,8 @@ import Head from 'next/head'
 export default function FarcasterFrameMeta({
   title = 'Storerunner',
   description = 'Order from your favorite ecommerce platforms directly onchain without having to move any funds.',
-  imageUrl = 'https://yourdomain.com/sharing-image.png', // Replace with your actual image URL
-  appUrl = 'https://yourdomain.com' // Replace with your actual app URL
+  imageUrl = 'https://storerunner.xyz/sharing-image.png', // Replace with your actual image URL
+  appUrl = 'https://storerunner.xyz' // Replace with your actual app URL
 }) {
   // Create the Frame embed JSON
   const frameEmbed = {

@@ -42,7 +42,7 @@ export async function POST(request) {
     const notificationPayload = {
       title: "Storerunner",
       content: message,
-      url: "https://storerunner.app"
+      url: "https://storerunner.xyz"
     };
     
     // Send the notification via Farcaster's API

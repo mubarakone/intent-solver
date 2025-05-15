@@ -17,15 +17,15 @@ You need to replace it with a properly signed one.
 
 1. Go to the [Farcaster JSON Tool](https://warpcast.com/~/developers/new) in Warpcast
 2. Fill in your app's information:
-   - Domain: `yourdomain.com` (without `https://` or paths)
+   - Domain: `storerunner.xyz` (without `https://` or paths)
    - Name: "Storerunner"
    - Description: "Order from your favorite ecommerce platforms directly onchain without having to move any funds."
-   - Home URL: "https://yourdomain.com"
-   - Icon URL: "https://yourdomain.com/icons/storerunner-icon.png"
+   - Home URL: "https://storerunner.xyz"
+   - Icon URL: "https://storerunner.xyz/icons/storerunner-icon.png"
    - Image URL (optional): URL to an image representing your app
    - Splash Image URL (optional): URL to an image shown during app loading
    - Splash Background Color (optional): A hex color code (e.g., "#f3f4f6")
-   - Webhook URL: "https://yourdomain.com/api/farcaster/webhook"
+   - Webhook URL: "https://storerunner.xyz/api/farcaster/webhook"
 
 3. Sign the message with your Farcaster account
 4. Copy the generated JSON output
@@ -47,7 +47,7 @@ Add any required environment variables for API integrations:
 
 ```
 # Farcaster MiniApp Configuration
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
+NEXT_PUBLIC_APP_URL=https://storerunner.xyz
 NEYNAR_API_KEY=your_neynar_api_key # Only needed if using Neynar for verification
 ```
 
@@ -68,12 +68,12 @@ vercel --prod
 
 1. Check that your `.well-known/farcaster.json` file is accessible at:
    ```
-   https://yourdomain.com/.well-known/farcaster.json
+   https://storerunner.xyz/.well-known/farcaster.json
    ```
 
 2. Validate that your API endpoints work:
    ```
-   https://yourdomain.com/api/farcaster/status
+   https://storerunner.xyz/api/farcaster/status
    ```
 
 3. Use the [MiniApp Debug Tool](https://warpcast.com/~/developers/mini-apps/debug) to preview your app

@@ -47,6 +47,17 @@ export default function RootLayout({ children }) {
     setIsFarcasterMiniApp(isMiniAppSafe());
   }, []);
 
+  // Force reload of favicon
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Load the cache-clearing script
+      const script = document.createElement('script');
+      script.src = '/clear-cache.js?v=1';
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -62,9 +73,19 @@ export default function RootLayout({ children }) {
         <meta name="msapplication-tap-highlight" content="no" />
         
         <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icons/storerunner-icon.png" />
-        <link rel="icon" href="/icons/storerunner-icon.png" />
-        <link rel="shortcut icon" href="/icons/storerunner-icon.png" />
+        <link rel="apple-touch-icon" href="/icons/storerunner-icon.png?v=1" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/storerunner-icon.png?v=1" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/storerunner-icon.png?v=1" />
+        <link rel="icon" href="/favicon.ico?v=1" />
+        <link rel="shortcut icon" href="/icons/storerunner-icon.png?v=1" />
+        <link rel="mask-icon" href="/icons/storerunner-icon.png?v=1" color="#5bbad5" />
+        <meta name="msapplication-TileImage" content="/icons/storerunner-icon.png?v=1" />
+        
+        {/* Cache busting script */}
+        <Script 
+          src="/clear-cache.js?v=1" 
+          strategy="beforeInteractive" 
+        />
         
         {/* Load Farcaster SDK script in a way that won't block SSR */}
         <Script 

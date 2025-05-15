@@ -8,12 +8,12 @@
     "version": "1",
     "name": "Storerunner",
     "description": "Order from your favorite ecommerce platforms directly onchain without having to move any funds.",
-    "iconUrl": "https://storerunner.app/icons/storerunner-icon.png",
-    "homeUrl": "https://storerunner.app",
-    "imageUrl": "https://storerunner.app/sharing-image.png",
+    "iconUrl": "https://storerunner.xyz/icons/storerunner-icon.png",
+    "homeUrl": "https://storerunner.xyz",
+    "imageUrl": "https://storerunner.xyz/sharing-image.png",
     "buttonTitle": "Open Storerunner",
-    "splashImageUrl": "https://storerunner.app/splash.png",
+    "splashImageUrl": "https://storerunner.xyz/splash.png",
     "splashBackgroundColor": "#f3f4f6",
-    "webhookUrl": "https://storerunner.app/api/farcaster/webhook"
+    "webhookUrl": "https://storerunner.xyz/api/farcaster/webhook"
   }
 } 
