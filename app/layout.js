@@ -43,6 +43,8 @@ export default function RootLayout({ children }) {
         
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/storerunner-icon.png" />
+        <link rel="icon" href="/icons/storerunner-icon.png" />
+        <link rel="shortcut icon" href="/icons/storerunner-icon.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
