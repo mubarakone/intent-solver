@@ -8,6 +8,12 @@ import AmazonItemCard from "../components/AmazonItemCard"
 import WalletButton from "../components/WalletButton"
 import CheckoutForm from "../components/CheckoutForm"
 import CheckoutModal from "../components/CheckoutModal";
+import dynamic from 'next/dynamic'
+import { isMiniAppSafe } from '../utils/isMiniApp'
+
+// Dynamically import components to avoid SSR issues
+const AddToFarcaster = dynamic(() => import('../components/AddToFarcaster'), { ssr: false })
+const ShareToFarcaster = dynamic(() => import('../components/ShareToFarcaster'), { ssr: false })
 
 export default function Home() {
   const [amazonLink, setAmazonLink] = useState("")
@@ -20,11 +26,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [clientConnected, setClientConnected] = useState(false);
+  const [isFarcasterMiniApp, setIsFarcasterMiniApp] = useState(false)
 
   const { isConnected } = useAccount();
 
   useEffect(() => {
     setClientConnected(isConnected);
+    setIsFarcasterMiniApp(isMiniAppSafe())
   }, [isConnected]);
 
   const handleProceedToCheckout = () => {
@@ -86,66 +94,103 @@ export default function Home() {
   };
 
   return (
-    <main className="bg-white py-5 sm:py-8 px-2 sm:px-4 lg:px-8 rounded-lg shadow-sm mb-2">
-      <div className="max-w-3xl mx-auto w-full">
-        <form onSubmit={handleScrape} className="mb-4">
-          <div className="w-full">
-            <div className="relative">
-              <input
-                type="text"
-                className="p-3 sm:p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                placeholder="Enter an Amazon link..."
-                value={amazonLink}
-                onChange={(e) => setAmazonLink(e.target.value)}
-              />
-              <div className="absolute top-1/2 end-2 -translate-y-1/2">
-                <button
-                  type="submit"
-                  className="size-8 sm:size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:bg-neutral-800 dark:hover:text-white dark:focus:text-white"
-                >
-                  <Search size={16} />
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-
-        {loading && (
-          <div className="flex justify-center my-4">
-            <div className="animate-spin size-6 border-t-2 border-blue-600 rounded-full"></div>
-          </div>
-        )}
-
-        {error && <p className="text-red-500 mt-4 text-sm">{error}</p>}
+    <div className="w-full">
+      <h2 className="text-2xl font-bold mb-6">Welcome to Storerunner</h2>
+      
+      {/* Farcaster-specific components */}
+      {isFarcasterMiniApp && (
+        <div className="mb-6">
+          <AddToFarcaster 
+            onSuccess={() => console.log('App added to Farcaster!')}
+          />
+        </div>
+      )}
+      
+      {/* Your main app content would go here */}
+      <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+        <h3 className="text-xl font-semibold mb-4">Order from your favorite stores</h3>
+        <p className="text-gray-600 mb-4">
+          Storerunner lets you order from your favorite ecommerce platforms directly onchain without having to move any funds.
+        </p>
         
-        {itemMetadata && (
-          <div className="mt-4">
-            <AmazonItemCard
-              findTotalPrice={setTotalPrice}
-              metadata={itemMetadata}
-              onDiscard={handleDiscardOrder}
-              onQuantityChange={handleQuantityChange}
-            />
-          </div>
-        )}
-
-        <div className="mt-6 sm:mt-8">
-          {!isCheckoutStarted ? (
-            <WalletButton
-              isDisabled={!itemMetadata}
-              onProceedToCheckout={handleProceedToCheckout}
-            />
-          ) : (
-            <CheckoutForm
-              onSubmit={(formData) => setCheckoutDetails(formData)}
-              onOpenModal={() => {
-                console.log("Modal state change triggered");
-                setIsModalOpen(true);
-              }}
-            />
-          )}
+        {/* Wallet status */}
+        <div className="p-4 bg-gray-50 rounded-lg mb-4">
+          <p className="text-sm text-gray-700">
+            {isConnected 
+              ? "Your wallet is connected! You're ready to start shopping." 
+              : "Connect your wallet to get started."}
+          </p>
+        </div>
+        
+        {/* Share button - always visible but will only work properly in Farcaster context */}
+        <div className="mt-6 flex justify-end">
+          <ShareToFarcaster 
+            text="I'm using Storerunner to shop onchain! Check it out:"
+          />
         </div>
       </div>
+
+      <main className="bg-white py-5 sm:py-8 px-2 sm:px-4 lg:px-8 rounded-lg shadow-sm mb-2">
+        <div className="max-w-3xl mx-auto w-full">
+          <form onSubmit={handleScrape} className="mb-4">
+            <div className="w-full">
+              <div className="relative">
+                <input
+                  type="text"
+                  className="p-3 sm:p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                  placeholder="Enter an Amazon link..."
+                  value={amazonLink}
+                  onChange={(e) => setAmazonLink(e.target.value)}
+                />
+                <div className="absolute top-1/2 end-2 -translate-y-1/2">
+                  <button
+                    type="submit"
+                    className="size-8 sm:size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:bg-neutral-800 dark:hover:text-white dark:focus:text-white"
+                  >
+                    <Search size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          {loading && (
+            <div className="flex justify-center my-4">
+              <div className="animate-spin size-6 border-t-2 border-blue-600 rounded-full"></div>
+            </div>
+          )}
+
+          {error && <p className="text-red-500 mt-4 text-sm">{error}</p>}
+          
+          {itemMetadata && (
+            <div className="mt-4">
+              <AmazonItemCard
+                findTotalPrice={setTotalPrice}
+                metadata={itemMetadata}
+                onDiscard={handleDiscardOrder}
+                onQuantityChange={handleQuantityChange}
+              />
+            </div>
+          )}
+
+          <div className="mt-6 sm:mt-8">
+            {!isCheckoutStarted ? (
+              <WalletButton
+                isDisabled={!itemMetadata}
+                onProceedToCheckout={handleProceedToCheckout}
+              />
+            ) : (
+              <CheckoutForm
+                onSubmit={(formData) => setCheckoutDetails(formData)}
+                onOpenModal={() => {
+                  console.log("Modal state change triggered");
+                  setIsModalOpen(true);
+                }}
+              />
+            )}
+          </div>
+        </div>
+      </main>
       
       <CheckoutModal
         key={isModalOpen ? "open" : "closed"}
@@ -161,6 +206,6 @@ export default function Home() {
           checkoutDetails,
         }}
       />
-    </main>
+    </div>
   );
 }

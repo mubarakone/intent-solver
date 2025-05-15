@@ -1,0 +1,19 @@
+{
+  "accountAssociation": {
+    "header": "__PLACEHOLDER__",
+    "payload": "__PLACEHOLDER__",
+    "signature": "__PLACEHOLDER__"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Storerunner",
+    "description": "Order from your favorite ecommerce platforms directly onchain without having to move any funds.",
+    "iconUrl": "https://storerunner.app/icons/storerunner-icon.png",
+    "homeUrl": "https://storerunner.app",
+    "imageUrl": "https://storerunner.app/sharing-image.png",
+    "buttonTitle": "Open Storerunner",
+    "splashImageUrl": "https://storerunner.app/splash.png",
+    "splashBackgroundColor": "#f3f4f6",
+    "webhookUrl": "https://storerunner.app/api/farcaster/webhook"
+  }
+} 

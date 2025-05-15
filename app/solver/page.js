@@ -2,7 +2,7 @@
 
 import { useAccount, useReadContract } from "wagmi";
 import { redirect } from "next/navigation";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import AdaptiveWalletButton from "../../components/AdaptiveWalletButton";
 import { CONTRACT_ABI } from "../../utils/contract_abi";
 
 export default function SolverIndex() {
@@ -48,19 +48,18 @@ export default function SolverIndex() {
 
           <div className="grid grid-rows-2 mt-5 flex justify-center">
             {/* 
-              Use the ConnectButton from RainbowKit. 
-              This replaces traditional email/password fields.
+              Use the AdaptiveWalletButton which works in both contexts 
             */}
             {isConnected && (
               <p className="block border bg-gray-300 text-sm mt-2 mb-5 dark:text-white">
                 You must be whitelisted to be a solver
               </p>
             )}
-            <ConnectButton />
+            <AdaptiveWalletButton />
           </div>
 
           <p className="mt-5 text-sm text-center text-gray-600">
-            Don’t have a wallet yet?
+            Don't have a wallet yet?
             <a
               target="_blank"
               href="https://learn.rainbow.me/understanding-web3?utm_source=rainbowkit&utm_campaign=learnmore"

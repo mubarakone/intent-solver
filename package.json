@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@farcaster/frame-sdk": "^0.0.41",
+    "@farcaster/frame-wagmi-connector": "^0.0.30",
     "@rainbow-me/rainbowkit": "^2.2.2",
     "@react-google-maps/api": "^2.20.5",
     "@reclaimprotocol/js-sdk": "^2.1.3",

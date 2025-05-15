@@ -6,8 +6,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from 'wagmi'
 import { config } from "../utils/config";
+import { farcasterConfig } from "../utils/farcasterConfig";
+import { isMiniAppSafe } from "../utils/isMiniApp";
+import dynamic from 'next/dynamic';
 import '@rainbow-me/rainbowkit/styles.css'; // Import RainbowKit styles
 import InstallPWA from '../components/InstallPWA';
+import { useEffect, useState } from "react";
+import Script from "next/script";
+
+// Dynamically import components that should only run on the client
+const FarcasterInit = dynamic(() => import('../components/FarcasterInit'), { ssr: false });
+const MiniAppLayout = dynamic(() => import('../components/MiniAppLayout'), { ssr: false });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +33,20 @@ const metadata = {
   description: "Order from your favorite ecommerce platforms directly onchain without having to move any funds.",
 };
 
-const queryClient = new QueryClient()
+// Create a client-side only QueryClient to avoid hydration issues
+const getQueryClient = () => new QueryClient();
 
 export default function RootLayout({ children }) {
+  // State to track if we're in a MiniApp environment
+  const [isFarcasterMiniApp, setIsFarcasterMiniApp] = useState(false);
+  // Create query client only on the client side
+  const [queryClient] = useState(() => getQueryClient());
+
+  // Determine if running as MiniApp on client-side
+  useEffect(() => {
+    setIsFarcasterMiniApp(isMiniAppSafe());
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -45,16 +65,35 @@ export default function RootLayout({ children }) {
         <link rel="apple-touch-icon" href="/icons/storerunner-icon.png" />
         <link rel="icon" href="/icons/storerunner-icon.png" />
         <link rel="shortcut icon" href="/icons/storerunner-icon.png" />
+        
+        {/* Load Farcaster SDK script in a way that won't block SSR */}
+        <Script 
+          src="https://esm.sh/@farcaster/frame-sdk" 
+          strategy="afterInteractive"
+          type="module"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <WagmiProvider config={config}>
+        {/* Use the appropriate Wagmi provider based on environment */}
+        <WagmiProvider config={isFarcasterMiniApp ? farcasterConfig : config}>
           <QueryClientProvider client={queryClient}>
-            <RainbowKitProvider>
-              {children}
-              <InstallPWA />
-            </RainbowKitProvider>
+            {/* In MiniApp context, we don't need RainbowKitProvider */}
+            {isFarcasterMiniApp ? (
+              <>
+                <FarcasterInit />
+                {/* Use optimized MiniApp layout in Farcaster context */}
+                <MiniAppLayout>
+                  {children}
+                </MiniAppLayout>
+              </>
+            ) : (
+              <RainbowKitProvider>
+                {children}
+                <InstallPWA />
+              </RainbowKitProvider>
+            )}
           </QueryClientProvider>
         </WagmiProvider>
       </body>
