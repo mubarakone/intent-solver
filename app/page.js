@@ -16,10 +16,15 @@ const FarcasterFrameMeta = dynamic(() => import('../components/FarcasterFrameMet
 // Create the Farcaster Frame meta content
 const frameEmbed = {
   version: 'vNext',
-  image: 'https://storerunner.xyz/sharing-image.png', // Replace with actual image URL
-  buttons: [{ label: 'Open App', target: '_blank' }],
-  ogTitle: 'Storerunner',
-  ogDescription: 'Order from your favorite ecommerce platforms directly onchain without having to move any funds.'
+  image: 'https://storerunner.xyz/sharing-image.png',
+  buttons: [
+    {
+      label: 'Open Storerunner',
+      action: 'post_redirect'
+    }
+  ],
+  post_url: 'https://storerunner.xyz/api/farcaster/frame',
+  aspect_ratio: '1.91:1'
 };
 
 export default function page() {
@@ -55,6 +60,9 @@ export default function page() {
       {/* Add Farcaster Frame meta tags */}
       <Head>
         <meta name="fc:frame" content={JSON.stringify(frameEmbed)} />
+        <meta name="fc:frame:image" content="https://storerunner.xyz/sharing-image.png" />
+        <meta name="fc:frame:button:1" content="Open Storerunner" />
+        <meta name="fc:frame:post_url" content="https://storerunner.xyz/api/farcaster/frame" />
       </Head>
       
       <main className="min-h-screen flex flex-col bg-gray-100 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">

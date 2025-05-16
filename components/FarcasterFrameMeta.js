@@ -13,24 +13,27 @@ export default function FarcasterFrameMeta({
   imageUrl = 'https://storerunner.xyz/sharing-image.png', // Replace with your actual image URL
   appUrl = 'https://storerunner.xyz' // Replace with your actual app URL
 }) {
-  // Create the Frame embed JSON
+  // Create the Frame embed JSON that follows the Farcaster spec
   const frameEmbed = {
     version: 'vNext',
     image: imageUrl,
     buttons: [
       {
-        label: 'Open App',
-        target: '_blank'
+        label: 'Open Storerunner',
+        action: 'post_redirect'
       }
     ],
-    ogTitle: title,
-    ogDescription: description
+    post_url: `${appUrl}/api/farcaster/frame`,
+    aspect_ratio: '1.91:1'
   }
 
   return (
     <Head>
       {/* Farcaster Frame meta tag */}
       <meta name="fc:frame" content={JSON.stringify(frameEmbed)} />
+      <meta name="fc:frame:image" content={imageUrl} />
+      <meta name="fc:frame:button:1" content="Open Storerunner" />
+      <meta name="fc:frame:post_url" content={`${appUrl}/api/farcaster/frame`} />
       
       {/* Standard Open Graph tags for other platforms */}
       <meta property="og:title" content={title} />

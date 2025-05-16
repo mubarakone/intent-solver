@@ -61,6 +61,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <title>Storerunner</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="theme-color" content="#f3f4f6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -92,6 +93,39 @@ export default function RootLayout({ children }) {
           src="https://esm.sh/@farcaster/frame-sdk" 
           strategy="afterInteractive"
           type="module"
+        />
+
+        {/* Add this script to the <head> to properly load the Farcaster SDK and dismiss the splash screen */}
+        <script 
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Load the Farcaster SDK script
+              function loadFarcasterSDK() {
+                try {
+                  if (typeof window !== 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = 'https://esm.sh/@farcaster/frame-sdk';
+                    script.type = 'module';
+                    script.onload = function() {
+                      // Call ready once the page has fully loaded
+                      window.addEventListener('load', function() {
+                        if (window.sdk && window.sdk.actions && window.sdk.actions.ready) {
+                          window.sdk.actions.ready();
+                          console.log('Farcaster SDK ready called');
+                        }
+                      });
+                    };
+                    document.head.appendChild(script);
+                  }
+                } catch (e) {
+                  console.error('Error loading Farcaster SDK:', e);
+                }
+              }
+              
+              // Call the function to load the SDK
+              loadFarcasterSDK();
+            `
+          }}
         />
       </head>
       <body
