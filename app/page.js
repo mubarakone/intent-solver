@@ -1,13 +1,13 @@
-'use client'
-import React, { useState, useEffect } from 'react'
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
-import { Menu } from 'lucide-react';
 import { isMiniAppSafe } from '../utils/isMiniApp';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import Home from './Home'
+import Home from './Home';
 import History from './History';
 
 // Dynamically import the Frame meta component to avoid SSR issues
@@ -27,7 +27,7 @@ const frameEmbed = {
   aspect_ratio: '1.91:1'
 };
 
-export default function page() {
+export default function Page() {
   const [activeTab, setActiveTab] = useState('Home');
   const [clientConnected, setClientConnected] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -107,5 +107,5 @@ export default function page() {
         </div>
       </main>
     </>
-  )
+  );
 }

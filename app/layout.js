@@ -28,11 +28,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const metadata = {
-  title: "Storerunner",
-  description: "Order from your favorite ecommerce platforms directly onchain without having to move any funds.",
-};
-
 // Create a client-side only QueryClient to avoid hydration issues
 const getQueryClient = () => new QueryClient();
 
@@ -88,44 +83,17 @@ export default function RootLayout({ children }) {
           strategy="beforeInteractive" 
         />
         
-        {/* Load Farcaster SDK script in a way that won't block SSR */}
+        {/* Load our dedicated Farcaster SDK handling script */}
+        <Script 
+          src="/farcaster-sdk.js" 
+          strategy="afterInteractive"
+        />
+        
+        {/* Load the Farcaster SDK package itself */}
         <Script 
           src="https://esm.sh/@farcaster/frame-sdk" 
           strategy="afterInteractive"
           type="module"
-        />
-
-        {/* Add this script to the <head> to properly load the Farcaster SDK and dismiss the splash screen */}
-        <script 
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Load the Farcaster SDK script
-              function loadFarcasterSDK() {
-                try {
-                  if (typeof window !== 'undefined') {
-                    const script = document.createElement('script');
-                    script.src = 'https://esm.sh/@farcaster/frame-sdk';
-                    script.type = 'module';
-                    script.onload = function() {
-                      // Call ready once the page has fully loaded
-                      window.addEventListener('load', function() {
-                        if (window.sdk && window.sdk.actions && window.sdk.actions.ready) {
-                          window.sdk.actions.ready();
-                          console.log('Farcaster SDK ready called');
-                        }
-                      });
-                    };
-                    document.head.appendChild(script);
-                  }
-                } catch (e) {
-                  console.error('Error loading Farcaster SDK:', e);
-                }
-              }
-              
-              // Call the function to load the SDK
-              loadFarcasterSDK();
-            `
-          }}
         />
       </head>
       <body

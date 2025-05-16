@@ -1,4 +1,4 @@
-// This is the Frame endpoint for handling Farcaster Frame actions
+// This is the Frame endpoint for handling Farcaster Frame interactions
 // See https://docs.farcaster.xyz/reference/frames/spec for more details
 
 export async function POST(request) {
@@ -10,7 +10,7 @@ export async function POST(request) {
     // Extract frame data from the request
     const { trustedData, untrustedData } = body;
     
-    // Build the next frame response
+    // Build the next frame response in the specific format expected by Farcaster
     const frameResponse = {
       version: 'vNext',
       image: 'https://storerunner.xyz/sharing-image.png',
@@ -23,7 +23,7 @@ export async function POST(request) {
       ]
     };
 
-    // Return the frame response
+    // Return the frame response with the correct headers
     return new Response(
       JSON.stringify(frameResponse),
       {
@@ -37,10 +37,23 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error handling frame request:', error);
     
+    // Return a fallback frame response in case of error
+    const errorResponse = {
+      version: 'vNext',
+      image: 'https://storerunner.xyz/sharing-image.png',
+      buttons: [
+        {
+          label: 'Try Again',
+          action: 'post'
+        }
+      ],
+      text: 'Something went wrong. Please try again.'
+    };
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify(errorResponse),
       {
-        status: 500,
+        status: 200, // Still return 200 with an error frame
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'

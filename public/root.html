@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storerunner</title>
+    <meta name="description" content="Order from your favorite ecommerce platforms directly onchain without having to move any funds.">
+    <link rel="icon" href="/icons/storerunner-icon.png" />
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+        }
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        p {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #4b5563;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .redirect-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 0.75rem 1rem;
+            background-color: #2563eb;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>Storerunner</h1>
+        <p>Order from your favorite ecommerce platforms directly onchain without having to move any funds.</p>
+        
+        <a href="/app" class="redirect-button">Launch App</a>
+        
+        <div class="loading" id="loading-message">
+            Loading Farcaster environment...
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the Farcaster SDK
+        import { sdk } from 'https://esm.sh/@farcaster/frame-sdk';
+        
+        window.onload = async function() {
+            try {
+                console.log("Farcaster SDK loading...");
+                
+                // Wait a moment to ensure the app is fully loaded
+                setTimeout(async () => {
+                    try {
+                        // Call ready to dismiss the splash screen
+                        if (sdk && sdk.actions && typeof sdk.actions.ready === 'function') {
+                            console.log("Calling sdk.actions.ready()");
+                            await sdk.actions.ready();
+                            console.log("sdk.actions.ready() completed");
+                            
+                            // Update the loading message
+                            document.getElementById('loading-message').textContent = 'Ready!';
+                            
+                            // If we're in a Farcaster environment, redirect to the main app
+                            const isFarcaster = sdk.isFrameContext();
+                            console.log("Is Farcaster context:", isFarcaster);
+                            
+                            if (isFarcaster) {
+                                // Short delay before redirect
+                                setTimeout(() => {
+                                    window.location.href = '/';
+                                }, 500);
+                            }
+                        } else {
+                            console.warn("SDK ready method not available");
+                            document.getElementById('loading-message').textContent = 'SDK not available. Please try again.';
+                        }
+                    } catch (error) {
+                        console.error("Error calling ready:", error);
+                        document.getElementById('loading-message').textContent = 'Error initializing. Please try again.';
+                    }
+                }, 500);
+            } catch (error) {
+                console.error("Error in onload handler:", error);
+                document.getElementById('loading-message').textContent = 'Error loading. Please try again.';
+            }
+        };
+    </script>
+</body>
+</html> 
