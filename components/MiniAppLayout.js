@@ -45,11 +45,7 @@ export default function MiniAppLayout({ children, currentPage = 'home' }) {
           >
             <Share className="w-5 h-5 text-gray-500" />
           </button>
-          <AdaptiveWalletButton 
-            compact={true} 
-            className="mx-1"
-            buttonText="Connect"
-          />
+          <AdaptiveWalletButton />
           <button 
             onClick={handleClose}
             className="p-1 rounded-full hover:bg-gray-100"

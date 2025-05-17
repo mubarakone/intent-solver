@@ -3,6 +3,10 @@ import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { keccak256, toHex, parseEther } from 'viem';
 import { HandCoins, X } from "lucide-react";
 import { CONTRACT_ABI } from "../utils/contract_abi";
+import dynamic from 'next/dynamic'
+
+// Dynamically import ShareToFarcaster to avoid SSR issues
+const ShareToFarcaster = dynamic(() => import('./ShareToFarcaster'), { ssr: false })
 
 export default function CheckoutModal({ isOpen, onClose, orderDetails }) {
   const [isClient, setIsClient] = useState(false);
@@ -441,8 +445,13 @@ export default function CheckoutModal({ isOpen, onClose, orderDetails }) {
           </ul>
         </div>
 
-        {/* Button */}
-        <div className="mt-4 sm:mt-5 flex justify-end gap-x-2">
+        {/* Buttons - now with Share to Farcaster */}
+        <div className="mt-4 sm:mt-5 flex justify-between gap-x-2">
+          {/* Share button */}
+          <ShareToFarcaster 
+            text={`I just ordered ${itemMetadata.title.slice(0, 30)}... on Storerunner! Shop on-chain without moving funds.`}
+          />
+          
           <button
             onClick={onClose}
             className="py-2 px-3 inline-flex items-center gap-x-2 text-xs sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"

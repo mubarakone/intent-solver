@@ -141,11 +141,11 @@ export default function ProofModal({
         </div>
 
         <div className="flex flex-col items-center justify-center mt-5">
-          <h4 className="text-lg font-semibold dark:text-neutral-200">
+          <h4 className="text-lg font-semibold">
             Waiting for you to submit your proof onchain...
           </h4>
           <div
-            className="mt-5 animate-spin inline-block size-20 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
+            className="mt-4 animate-spin inline-block size-16 sm:size-20 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"
             role="status"
             aria-label="loading"
           >

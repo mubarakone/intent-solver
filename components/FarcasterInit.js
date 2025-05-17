@@ -1,14 +1,12 @@
 'use client'
 
 import React, { useEffect } from 'react';
-import { switchToBaseSepolia } from '../utils/farcasterActions';
 
 /**
  * Component that initializes Farcaster MiniApp features
  * - Calls the ready() method to dismiss splash screen
  * - Sets up event listeners
  * - Initializes all Farcaster SDK features needed
- * - Switches to Base Sepolia network
  */
 export default function FarcasterInit() {
   useEffect(() => {
@@ -26,18 +24,6 @@ export default function FarcasterInit() {
             try {
               await window.sdk.actions.ready();
               console.log('FarcasterInit: Ready called successfully');
-              
-              // After ready is called, attempt to switch to Base Sepolia
-              // This is done after ready to avoid UI conflicts with the splash screen
-              setTimeout(async () => {
-                try {
-                  const success = await switchToBaseSepolia();
-                  console.log('FarcasterInit: Switch to Base Sepolia ' + (success ? 'successful' : 'failed'));
-                } catch (chainError) {
-                  console.error('FarcasterInit: Error switching chain:', chainError);
-                }
-              }, 1500);
-              
             } catch (error) {
               console.error('FarcasterInit: Error calling ready()', error);
             }
@@ -51,16 +37,6 @@ export default function FarcasterInit() {
                 console.log('FarcasterInit: SDK imported, calling ready()');
                 await module.sdk.actions.ready();
                 console.log('FarcasterInit: Ready called successfully after import');
-                
-                // After ready is called, attempt to switch to Base Sepolia
-                setTimeout(async () => {
-                  try {
-                    const success = await switchToBaseSepolia();
-                    console.log('FarcasterInit: Switch to Base Sepolia ' + (success ? 'successful' : 'failed'));
-                  } catch (chainError) {
-                    console.error('FarcasterInit: Error switching chain:', chainError);
-                  }
-                }, 1500);
               } else {
                 console.warn('FarcasterInit: SDK import successful but SDK object not available');
               }

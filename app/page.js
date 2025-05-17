@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { isMiniAppSafe } from '../utils/isMiniApp';
 import dynamic from 'next/dynamic';
@@ -8,7 +9,6 @@ import Head from 'next/head';
 
 import Home from './Home';
 import History from './History';
-import WalletConnect from '../components/WalletConnect';
 
 // Dynamically import the Frame meta component to avoid SSR issues
 const FarcasterFrameMeta = dynamic(() => import('../components/FarcasterFrameMeta'), { ssr: false });
@@ -73,10 +73,12 @@ export default function Page() {
             Storerunner
           </h1>
 
-          {/* Wallet connection - adaptive based on environment */}
-          <div className="w-full sm:w-auto mt-4 sm:mt-0 sm:absolute sm:right-4">
-            <WalletConnect />
-          </div>
+          {/* Only show the connect button in standalone web app context */}
+          {clientConnected && !isFarcasterMiniApp && (
+            <div className="w-full sm:w-auto mt-4 sm:mt-0 sm:absolute sm:right-4">
+              <ConnectButton />
+            </div>
+          )}
         </div>
 
         {/* Content wrapper with flex layout */}

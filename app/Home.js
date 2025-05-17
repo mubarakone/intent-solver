@@ -13,7 +13,6 @@ import { isMiniAppSafe } from '../utils/isMiniApp'
 
 // Dynamically import components to avoid SSR issues
 const AddToFarcaster = dynamic(() => import('../components/AddToFarcaster'), { ssr: false })
-const ShareToFarcaster = dynamic(() => import('../components/ShareToFarcaster'), { ssr: false })
 
 export default function Home() {
   const [amazonLink, setAmazonLink] = useState("")
@@ -95,8 +94,6 @@ export default function Home() {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold mb-6">Welcome to Storerunner</h2>
-      
       {/* Farcaster-specific components */}
       {isFarcasterMiniApp && (
         <div className="mb-6">
@@ -106,30 +103,6 @@ export default function Home() {
         </div>
       )}
       
-      {/* Your main app content would go here */}
-      <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
-        <h3 className="text-xl font-semibold mb-4">Order from your favorite stores</h3>
-        <p className="text-gray-600 mb-4">
-          Storerunner lets you order from your favorite ecommerce platforms directly onchain without having to move any funds.
-        </p>
-        
-        {/* Wallet status */}
-        <div className="p-4 bg-gray-50 rounded-lg mb-4">
-          <p className="text-sm text-gray-700">
-            {isConnected 
-              ? "Your wallet is connected! You're ready to start shopping." 
-              : "Connect your wallet to get started."}
-          </p>
-        </div>
-        
-        {/* Share button - always visible but will only work properly in Farcaster context */}
-        <div className="mt-6 flex justify-end">
-          <ShareToFarcaster 
-            text="I'm using Storerunner to shop onchain! Check it out:"
-          />
-        </div>
-      </div>
-
       <main className="bg-white py-5 sm:py-8 px-2 sm:px-4 lg:px-8 rounded-lg shadow-sm mb-2">
         <div className="max-w-3xl mx-auto w-full">
           <form onSubmit={handleScrape} className="mb-4">
