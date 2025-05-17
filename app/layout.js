@@ -54,10 +54,10 @@ export default function RootLayout({ children }) {
   }, []);
 
   return (
-    <html lang="en">
+    <html lang="en" className="antialiased">
       <head>
         <title>Storerunner</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
         <meta name="theme-color" content="#f3f4f6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="application-name" content="Storerunner" />
