@@ -1,8 +1,8 @@
 'use client'
 
 import { http, createConfig } from 'wagmi'
-import { base, baseSepolia } from 'wagmi/chains'
-import { farcasterFrame as miniAppConnector } from '@farcaster/frame-wagmi-connector'
+import { base, mainnet, optimism, baseSepolia } from 'wagmi/chains'
+import { farcasterFrame as farcasterConnector } from '@farcaster/frame-wagmi-connector'
 
 /**
  * Create a Wagmi config for Farcaster MiniApp
@@ -11,12 +11,14 @@ import { farcasterFrame as miniAppConnector } from '@farcaster/frame-wagmi-conne
  * The miniAppConnector will not work in SSR context.
  */
 export const farcasterConfig = createConfig({
-  chains: [baseSepolia, base],
+  chains: [baseSepolia, base, mainnet, optimism],
   transports: {
-    [base.id]: http(),
     [baseSepolia.id]: http(),
+    [base.id]: http(),
+    [mainnet.id]: http(),
+    [optimism.id]: http(),
   },
   connectors: [
-    miniAppConnector()
+    farcasterConnector()
   ]
 }); 

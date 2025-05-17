@@ -2,6 +2,7 @@
 
 import { sdk } from '@farcaster/frame-sdk'
 import { isMiniAppSafe } from './isMiniApp'
+import { baseSepolia } from 'wagmi/chains'
 
 /**
  * Utility functions for Farcaster-specific actions
@@ -81,5 +82,66 @@ export const getFarcasterEthAddress = async () => {
   } catch (error) {
     console.error('Error getting Farcaster Ethereum address:', error)
     return null
+  }
+}
+
+/**
+ * Switch to the Base Sepolia network in Farcaster MiniApp context
+ * 
+ * @returns {Promise<boolean>} True if successful, false otherwise
+ */
+export const switchToBaseSepolia = async () => {
+  // SSR guard
+  if (typeof window === 'undefined') return false;
+  
+  if (!isMiniAppSafe()) return false;
+  
+  try {
+    // First check if we're already on Base Sepolia
+    const { chainId } = await sdk.wallet.ethProvider.request({ 
+      method: 'eth_chainId' 
+    });
+    
+    // Convert from hex to decimal
+    const currentChainId = parseInt(chainId, 16);
+    
+    // If already on Base Sepolia, return success
+    if (currentChainId === baseSepolia.id) {
+      return true;
+    }
+    
+    // Otherwise switch to Base Sepolia
+    await sdk.wallet.ethProvider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: `0x${baseSepolia.id.toString(16)}` }]
+    });
+    
+    return true;
+  } catch (error) {
+    console.error('Error switching to Base Sepolia:', error);
+    
+    // If the chain isn't added yet, try to add it
+    if (error.code === 4902) {
+      try {
+        await sdk.wallet.ethProvider.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: `0x${baseSepolia.id.toString(16)}`,
+              chainName: baseSepolia.name,
+              nativeCurrency: baseSepolia.nativeCurrency,
+              rpcUrls: [baseSepolia.rpcUrls.default.http[0]],
+              blockExplorerUrls: [baseSepolia.blockExplorers?.default.url]
+            }
+          ]
+        });
+        return true;
+      } catch (addError) {
+        console.error('Error adding Base Sepolia chain:', addError);
+        return false;
+      }
+    }
+    
+    return false;
   }
 } 
