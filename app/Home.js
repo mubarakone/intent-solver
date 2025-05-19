@@ -109,14 +109,14 @@ export default function Home() {
         )}
       </ClientOnly>
       
-      <main className="bg-white py-5 sm:py-8 px-2 sm:px-4 lg:px-8 rounded-lg shadow-sm mb-2">
+      <main className="bg-white dark:bg-gray-800 py-5 sm:py-8 px-2 sm:px-4 lg:px-8 rounded-lg shadow-sm mb-2">
         <div className="max-w-3xl mx-auto w-full">
           <form onSubmit={handleScrape} className="mb-4">
             <div className="w-full">
               <div className="relative">
                 <input
                   type="text"
-                  className="p-3 sm:p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                  className="p-3 sm:p-4 block w-full border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                   placeholder="Enter an Amazon link..."
                   value={amazonLink}
                   onChange={(e) => setAmazonLink(e.target.value)}
@@ -124,7 +124,7 @@ export default function Home() {
                 <div className="absolute top-1/2 end-2 -translate-y-1/2">
                   <button
                     type="submit"
-                    className="size-8 sm:size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
+                    className="size-8 sm:size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 dark:bg-black dark:text-gray-300 dark:hover:text-white disabled:opacity-50 disabled:pointer-events-none"
                   >
                     <Search size={16} />
                   </button>

@@ -48,18 +48,18 @@ export default function IntentTable({
       <div className="flex flex-col">
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
               {/* Header */}
-              <div className="px-4 sm:px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200">
+              <div className="px-4 sm:px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 dark:border-gray-700">
                 <div>
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">All Intents</h2>
-                  <p className="text-xs sm:text-sm text-gray-600">Latest, recent, and previous intents.</p>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100">All Intents</h2>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Latest, recent, and previous intents.</p>
                 </div>
 
                 <div className="flex justify-end">
                   <div className="inline-flex gap-x-2">
                     <a
-                      className="py-2 px-3 inline-flex items-center gap-x-2 text-xs sm:text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
+                      className="py-2 px-3 inline-flex items-center gap-x-2 text-xs sm:text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700"
                       href="#"
                     >
                       View all
@@ -78,10 +78,10 @@ export default function IntentTable({
               {/* End Header */}
 
               {/* Collapse (optional) - using React state instead of Preline */}
-              <div className="border-b border-gray-200 hover:bg-gray-50">
+              <div className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <button
                   type="button"
-                  className="py-3 sm:py-4 px-4 sm:px-6 w-full flex items-center gap-2 font-semibold text-gray-800"
+                  className="py-3 sm:py-4 px-4 sm:px-6 w-full flex items-center gap-2 font-semibold text-gray-800 dark:text-gray-200"
                   onClick={toggleInsights}
                 >
                   {insightsExpanded ? (
@@ -111,7 +111,7 @@ export default function IntentTable({
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </span>
-                      <span className="text-sm text-gray-800">
+                      <span className="text-sm text-gray-800 dark:text-gray-200">
                         There are no insights for this period.
                       </span>
                     </div>
@@ -128,7 +128,7 @@ export default function IntentTable({
                       <div className="animate-spin size-6 border-t-2 border-blue-600 rounded-full"></div>
                     </div>
                   ) : (
-                    <ul className="divide-y divide-gray-200">
+                    <ul className="divide-y divide-gray-200 dark:divide-gray-700">
                       {intentCreatedEvents.map((intent) => {
                         // Convert Wei to Ether
                         const finalPriceInEther = Number(intent.deposit) / 10 ** 18;
@@ -139,19 +139,19 @@ export default function IntentTable({
                         const remainingTime = remainingTimes[intent.intentId] || 'Calculating...';
 
                         return (
-                          <li key={intent.intentId.toString()} className="p-4 border-b border-gray-200 last:border-0">
+                          <li key={intent.intentId.toString()} className="p-4 border-b border-gray-200 dark:border-gray-700 last:border-0">
                             <div className="flex items-center justify-between">
                               <div>
-                                <span className="font-mono text-sm text-blue-600">
+                                <span className="font-mono text-sm text-blue-600 dark:text-blue-400">
                                   #{intent.intentId}
                                 </span>
-                                <p className="text-sm text-gray-600 mt-1">
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                                   ${finalPriceInUSD.toFixed(2)}
                                 </p>
                               </div>
                               <button 
                                 onClick={() => toggleExpandedIntent(intent.intentId.toString())}
-                                className="text-gray-500"
+                                className="text-gray-500 dark:text-gray-400"
                               >
                                 <ChevronRightIcon 
                                   size={20} 
@@ -165,8 +165,8 @@ export default function IntentTable({
                                 className={`py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium 
                                   ${
                                     isIntentFulfilledValue
-                                      ? 'bg-red-100 text-red-800'
-                                      : 'bg-green-100 text-green-800'
+                                      ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                      : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                   } 
                                   rounded-full`}
                               >
@@ -176,8 +176,8 @@ export default function IntentTable({
                                 className={`py-1 px-1.5 text-xs font-medium rounded-full 
                                   ${
                                     remainingTime === 'Expired'
-                                      ? 'bg-gray-300 text-gray-700'
-                                      : 'bg-cyan-100 text-cyan-800'
+                                      ? 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                                      : 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400'
                                   }`}
                               >
                                 {remainingTime}
@@ -185,12 +185,12 @@ export default function IntentTable({
                             </div>
                             
                             {expandedIntent === intent.intentId.toString() && (
-                              <div className="mt-3 pt-3 border-t border-gray-100">
-                                <p className="text-xs text-gray-500">Created: {intent.createdAt}</p>
+                              <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Created: {intent.createdAt}</p>
                                 <button
                                   type="button"
                                   onClick={() => handleItemSelect(intent)}
-                                  className="mt-2 py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none text-xs"
+                                  className="mt-2 py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border dark:border-gray-700 font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 shadow-sm align-middle hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none text-xs"
                                 >
                                   <ScanQrCodeIcon size={14} />
                                   View details
@@ -205,12 +205,12 @@ export default function IntentTable({
                 </div>
 
                 {/* Desktop Table View */}
-                <table className="hidden sm:table min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="hidden sm:table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-start">
                         <div className="flex items-center gap-x-2">
-                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
                             Intent number
                           </span>
                         </div>
@@ -218,7 +218,7 @@ export default function IntentTable({
 
                       <th scope="col" className="px-6 py-3 text-start">
                         <div className="flex items-center gap-x-2">
-                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
                             Amount
                           </span>
                         </div>
@@ -226,7 +226,7 @@ export default function IntentTable({
 
                       <th scope="col" className="px-6 py-3 text-start">
                         <div className="flex items-center gap-x-2">
-                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
                             Status
                           </span>
                         </div>
@@ -234,7 +234,7 @@ export default function IntentTable({
 
                       <th scope="col" className="px-6 py-3 text-start">
                         <div className="flex items-center gap-x-2">
-                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
                             Due
                           </span>
                         </div>
@@ -242,7 +242,7 @@ export default function IntentTable({
 
                       <th scope="col" className="px-6 py-3 text-start">
                         <div className="flex items-center gap-x-2">
-                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
                             Created
                           </span>
                         </div>
@@ -252,7 +252,7 @@ export default function IntentTable({
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {isLoading ? (
                       <TableSkeleton />
                     ) : (
@@ -268,7 +268,7 @@ export default function IntentTable({
                       return (
                         <tr
                           key={intent.intentId.toString()}
-                          className="bg-white hover:bg-gray-50"
+                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                         >
                           <td className="whitespace-nowrap">
                             <button
@@ -277,7 +277,7 @@ export default function IntentTable({
                               onClick={() => handleItemSelect(intent)}
                             >
                               <span className="block px-6 py-2">
-                                <span className="font-mono text-sm text-blue-600">
+                                <span className="font-mono text-sm text-blue-600 dark:text-blue-400">
                                   #{intent.intentId}
                                 </span>
                               </span>
@@ -285,7 +285,7 @@ export default function IntentTable({
                           </td>
                           <td className="whitespace-nowrap">
                             <span className="block px-6 py-2">
-                              <span className="text-sm text-gray-600">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">
                                 ${finalPriceInUSD.toFixed(2)}
                               </span>
                             </span>
@@ -296,8 +296,8 @@ export default function IntentTable({
                                 className={`py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium 
                                   ${
                                     isIntentFulfilledValue
-                                      ? 'bg-red-100 text-red-800'
-                                      : 'bg-green-100 text-green-800'
+                                      ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                      : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                   } 
                                   rounded-full`}
                               >
@@ -311,8 +311,8 @@ export default function IntentTable({
                                 className={`py-1 px-1.5 text-xs font-medium rounded-full 
                                   ${
                                     remainingTime === 'Expired'
-                                      ? 'bg-gray-300 text-gray-700'
-                                      : 'bg-cyan-100 text-cyan-800'
+                                      ? 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                                      : 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400'
                                   }`}
                               >
                                 {remainingTime}
@@ -321,7 +321,7 @@ export default function IntentTable({
                           </td>
                           <td className="whitespace-nowrap">
                             <span className="block px-6 py-2">
-                              <span className="text-sm text-gray-600">{intent.createdAt}</span>
+                              <span className="text-sm text-gray-600 dark:text-gray-400">{intent.createdAt}</span>
                             </span>
                           </td>
                           <td className="whitespace-nowrap">
@@ -331,7 +331,7 @@ export default function IntentTable({
                               className="block"
                             >
                               <span className="px-6 py-1.5">
-                                <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm">
+                                <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border dark:border-gray-700 font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 shadow-sm align-middle hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm">
                                   <ScanQrCodeIcon size={15} />
                                   View
                                 </span>

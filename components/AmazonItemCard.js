@@ -55,10 +55,10 @@ export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, 
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 relative">
+    <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 sm:p-6 relative">
       <button
         onClick={onDiscard}
-        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+        className="absolute top-2 right-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
         aria-label="Discard order"
       >
         <Trash2 size={18} className="sm:size-5" />
@@ -75,25 +75,25 @@ export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, 
           <div className="flex-1 min-w-0">
             <a 
               href={metadata.url} 
-              className="text-blue-500 text-sm font-semibold underline line-clamp-2 break-words" 
+              className="text-blue-500 dark:text-blue-400 text-sm font-semibold underline line-clamp-2 break-words" 
               target="_blank"
             >
               {truncateTitle(metadata.title, 40)}
             </a>
           </div>
         </div>
-        <p className="text-gray-700 text-xs mb-3">{truncateTitle(metadata.description, 80)}</p>
+        <p className="text-gray-700 dark:text-gray-300 text-xs mb-3">{truncateTitle(metadata.description, 80)}</p>
         <div className="flex justify-between items-center">
-          <p className="text-gray-600 font-bold text-lg">{calculateTotalPrice()}</p>
+          <p className="text-gray-600 dark:text-gray-200 font-bold text-lg">{calculateTotalPrice()}</p>
           <div className="flex items-center">
-            <label htmlFor="quantity-mobile" className="mr-2 text-xs font-medium text-gray-700">
+            <label htmlFor="quantity-mobile" className="mr-2 text-xs font-medium text-gray-700 dark:text-gray-300">
               Qty:
             </label>
             <select
               id="quantity-mobile"
               value={quantity}
               onChange={handleQuantityChange}
-              className="block w-14 rounded-md border-gray-300 shadow-sm text-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              className="block w-14 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             >
               {[...Array(30)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
@@ -109,19 +109,19 @@ export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, 
       <div className="hidden sm:flex sm:items-center">
         <img src={metadata.image || "/placeholder.svg"} alt={metadata.title} className="w-20 h-20 object-cover mr-4 rounded-md" />
         <div className="flex-1">
-          <a href={metadata.url} className="text-blue-500 text-xl underline font-semibold" target="_blank">{metadata.title}</a>
-          <p className="text-gray-700 flex-grow">{metadata.description}</p>
+          <a href={metadata.url} className="text-blue-500 dark:text-blue-400 text-xl underline font-semibold" target="_blank">{metadata.title}</a>
+          <p className="text-gray-700 dark:text-gray-300 flex-grow">{metadata.description}</p>
           <div className="mt-3 flex justify-between items-center">
-            <p className="text-gray-600 font-bold text-xl">{calculateTotalPrice()}</p>
+            <p className="text-gray-600 dark:text-gray-200 font-bold text-xl">{calculateTotalPrice()}</p>
             <div className="flex items-center ml-4">
-              <label htmlFor="quantity-desktop" className="mr-2 text-sm font-medium text-gray-700">
+              <label htmlFor="quantity-desktop" className="mr-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Qty:
               </label>
               <select
                 id="quantity-desktop"
                 value={quantity}
                 onChange={handleQuantityChange}
-                className="block w-16 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="block w-16 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               >
                 {[...Array(30)].map((_, i) => (
                   <option key={i + 1} value={i + 1}>
