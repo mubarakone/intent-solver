@@ -3,15 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
-import { isMiniAppSafe } from '../utils/isMiniApp';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
 
 import Home from './Home';
 import History from './History';
 
-// Dynamically import the Frame meta component to avoid SSR issues
+// Dynamically import components that need client-side only execution
 const FarcasterFrameMeta = dynamic(() => import('../components/FarcasterFrameMeta'), { ssr: false });
+const ClientOnly = dynamic(() => import('../components/ClientOnly'), { ssr: false });
 
 // Create the Farcaster Frame meta content
 const frameEmbed = {
@@ -37,12 +36,12 @@ export default function Page() {
 
   useEffect(() => {
     setClientConnected(isConnected);
+    
+    // Only import and use on client
+    import('../utils/isMiniApp').then(({ isMiniAppSafe }) => {
+      setIsFarcasterMiniApp(isMiniAppSafe());
+    });
   }, [isConnected]);
-
-  // Check if running as MiniApp
-  useEffect(() => {
-    setIsFarcasterMiniApp(isMiniAppSafe());
-  }, []);
 
   const renderTab = () => {
     switch(activeTab) {
@@ -57,13 +56,9 @@ export default function Page() {
 
   return (
     <>
-      {/* Add Farcaster Frame meta tags */}
-      <Head>
-        <meta name="fc:frame" content={JSON.stringify(frameEmbed)} />
-        <meta name="fc:frame:image" content="https://storerunner.xyz/sharing-image.png" />
-        <meta name="fc:frame:button:1" content="Open Storerunner" />
-        <meta name="fc:frame:post_url" content="https://storerunner.xyz/api/farcaster/frame" />
-      </Head>
+      <ClientOnly>
+        <FarcasterFrameMeta frameData={frameEmbed} />
+      </ClientOnly>
       
       <main className="min-h-screen flex flex-col bg-gray-100 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
         {/* Header with mobile optimization */}
@@ -74,11 +69,13 @@ export default function Page() {
           </h1>
 
           {/* Only show the connect button in standalone web app context */}
-          {clientConnected && !isFarcasterMiniApp && (
-            <div className="w-full sm:w-auto mt-4 sm:mt-0 sm:absolute sm:right-4">
-              <ConnectButton />
-            </div>
-          )}
+          <ClientOnly>
+            {clientConnected && !isFarcasterMiniApp && (
+              <div className="w-full sm:w-auto mt-4 sm:mt-0 sm:absolute sm:right-4">
+                <ConnectButton />
+              </div>
+            )}
+          </ClientOnly>
         </div>
 
         {/* Content wrapper with flex layout */}

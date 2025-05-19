@@ -1,8 +1,15 @@
+'use client'
+
 import { useState, useEffect } from "react"
 import { Trash2 } from "lucide-react"
 
 export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, findTotalPrice }) {
   const [quantity, setQuantity] = useState(1)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleQuantityChange = (e) => {
     const newQuantity = Number.parseInt(e.target.value, 10)
@@ -32,12 +39,14 @@ export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, 
 
   // Call `findTotalPrice` in a `useEffect` when `quantity` changes
   useEffect(() => {
+    if (!mounted) return;
+    
     if (metadata?.price) {
       const numericPrice = extractPriceValue(metadata.price);
       const totalPrice = numericPrice * quantity;
       findTotalPrice(totalPrice); // Update total price after rendering
     }
-  }, [quantity, metadata, findTotalPrice]);
+  }, [quantity, metadata, findTotalPrice, mounted]);
 
   // Truncate long titles for mobile display
   const truncateTitle = (title, maxLength = 60) => {

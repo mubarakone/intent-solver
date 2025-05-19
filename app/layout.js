@@ -7,16 +7,16 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from 'wagmi'
 import { config } from "../utils/config";
 import { farcasterConfig } from "../utils/farcasterConfig";
-import { isMiniAppSafe } from "../utils/isMiniApp";
-import dynamic from 'next/dynamic';
 import '@rainbow-me/rainbowkit/styles.css'; // Import RainbowKit styles
-import InstallPWA from '../components/InstallPWA';
-import { useEffect, useState } from "react";
 import Script from "next/script";
+import { useEffect, useState } from "react";
+import dynamic from 'next/dynamic';
 
 // Dynamically import components that should only run on the client
 const FarcasterInit = dynamic(() => import('../components/FarcasterInit'), { ssr: false });
 const MiniAppLayout = dynamic(() => import('../components/MiniAppLayout'), { ssr: false });
+const InstallPWA = dynamic(() => import('../components/InstallPWA'), { ssr: false });
+const ClientOnly = dynamic(() => import('../components/ClientOnly'), { ssr: false });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,30 +31,41 @@ const geistMono = Geist_Mono({
 // Create a client-side only QueryClient to avoid hydration issues
 const getQueryClient = () => new QueryClient();
 
+// Component to handle theme initialization
+function ThemeInitScript() {
+  useEffect(() => {
+    // This will run only once on the client side
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = prefersDark ? 'dark' : 'light';
+    
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+    
+    // Listen for changes in color scheme preference
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(e.matches ? 'dark' : 'light');
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+  
+  return null;
+}
+
 export default function RootLayout({ children }) {
-  // State to track if we're in a MiniApp environment
-  const [isFarcasterMiniApp, setIsFarcasterMiniApp] = useState(false);
   // Create query client only on the client side
   const [queryClient] = useState(() => getQueryClient());
 
-  // Determine if running as MiniApp on client-side
-  useEffect(() => {
-    setIsFarcasterMiniApp(isMiniAppSafe());
-  }, []);
-
-  // Force reload of favicon
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Load the cache-clearing script
-      const script = document.createElement('script');
-      script.src = '/clear-cache.js?v=1';
-      script.async = true;
-      document.head.appendChild(script);
-    }
-  }, []);
+  // Get initial color scheme preference for server rendering
+  // This won't be 100% accurate but will be replaced by client-side logic
+  const systemPrefersDark = false; // Default to light for SSR
+  const initialTheme = systemPrefersDark ? 'dark' : 'light';
 
   return (
-    <html lang="en" className="antialiased">
+    <html lang="en" className={`antialiased ${initialTheme}`}>
       <head>
         <title>Storerunner</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -99,27 +110,45 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Use the appropriate Wagmi provider based on environment */}
-        <WagmiProvider config={isFarcasterMiniApp ? farcasterConfig : config}>
+        <ClientOnly>
+          <ThemeInitScript />
           <QueryClientProvider client={queryClient}>
-            {/* In MiniApp context, we don't need RainbowKitProvider */}
-            {isFarcasterMiniApp ? (
-              <>
-                <FarcasterInit />
-                {/* Use optimized MiniApp layout in Farcaster context */}
-                <MiniAppLayout>
-                  {children}
-                </MiniAppLayout>
-              </>
-            ) : (
-              <RainbowKitProvider>
-                {children}
-                <InstallPWA />
-              </RainbowKitProvider>
-            )}
+            <WagmiProviders>
+              {children}
+            </WagmiProviders>
           </QueryClientProvider>
-        </WagmiProvider>
+        </ClientOnly>
       </body>
     </html>
+  );
+}
+
+// Wrapper component for handling platform-specific providers
+function WagmiProviders({ children }) {
+  const [isFarcasterMiniApp, setIsFarcasterMiniApp] = useState(false);
+  
+  useEffect(() => {
+    // Only import and use on client
+    import('../utils/isMiniApp').then(({ isMiniAppSafe }) => {
+      setIsFarcasterMiniApp(isMiniAppSafe());
+    });
+  }, []);
+
+  if (isFarcasterMiniApp) {
+    return (
+      <WagmiProvider config={farcasterConfig}>
+        <FarcasterInit />
+        <MiniAppLayout>{children}</MiniAppLayout>
+      </WagmiProvider>
+    );
+  }
+
+  return (
+    <WagmiProvider config={config}>
+      <RainbowKitProvider>
+        {children}
+        <InstallPWA />
+      </RainbowKitProvider>
+    </WagmiProvider>
   );
 }

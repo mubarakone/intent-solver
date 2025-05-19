@@ -9,10 +9,10 @@ import WalletButton from "../components/WalletButton"
 import CheckoutForm from "../components/CheckoutForm"
 import CheckoutModal from "../components/CheckoutModal";
 import dynamic from 'next/dynamic'
-import { isMiniAppSafe } from '../utils/isMiniApp'
 
 // Dynamically import components to avoid SSR issues
 const AddToFarcaster = dynamic(() => import('../components/AddToFarcaster'), { ssr: false })
+const ClientOnly = dynamic(() => import('../components/ClientOnly'), { ssr: false })
 
 export default function Home() {
   const [amazonLink, setAmazonLink] = useState("")
@@ -31,7 +31,11 @@ export default function Home() {
 
   useEffect(() => {
     setClientConnected(isConnected);
-    setIsFarcasterMiniApp(isMiniAppSafe())
+    
+    // Only import and use on client
+    import('../utils/isMiniApp').then(({ isMiniAppSafe }) => {
+      setIsFarcasterMiniApp(isMiniAppSafe());
+    });
   }, [isConnected]);
 
   const handleProceedToCheckout = () => {
@@ -95,13 +99,15 @@ export default function Home() {
   return (
     <div className="w-full">
       {/* Farcaster-specific components */}
-      {isFarcasterMiniApp && (
-        <div className="mb-6">
-          <AddToFarcaster 
-            onSuccess={() => console.log('App added to Farcaster!')}
-          />
-        </div>
-      )}
+      <ClientOnly>
+        {isFarcasterMiniApp && (
+          <div className="mb-6">
+            <AddToFarcaster 
+              onSuccess={() => console.log('App added to Farcaster!')}
+            />
+          </div>
+        )}
+      </ClientOnly>
       
       <main className="bg-white py-5 sm:py-8 px-2 sm:px-4 lg:px-8 rounded-lg shadow-sm mb-2">
         <div className="max-w-3xl mx-auto w-full">
@@ -110,7 +116,7 @@ export default function Home() {
               <div className="relative">
                 <input
                   type="text"
-                  className="p-3 sm:p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                  className="p-3 sm:p-4 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                   placeholder="Enter an Amazon link..."
                   value={amazonLink}
                   onChange={(e) => setAmazonLink(e.target.value)}
@@ -118,7 +124,7 @@ export default function Home() {
                 <div className="absolute top-1/2 end-2 -translate-y-1/2">
                   <button
                     type="submit"
-                    className="size-8 sm:size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:bg-neutral-800 dark:hover:text-white dark:focus:text-white"
+                    className="size-8 sm:size-10 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:text-gray-800 focus:outline-none focus:text-gray-800 bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
                   >
                     <Search size={16} />
                   </button>

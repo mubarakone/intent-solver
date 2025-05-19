@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { ScanQrCodeIcon, FilterIcon, ChevronRightIcon, ChevronDown, ChevronUp } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
-import TableSkeleton from './TableSkeleton'
+const TableSkeleton = dynamic(() => import('./TableSkeleton'), { ssr: false });
+const ClientOnly = dynamic(() => import('./ClientOnly'), { ssr: false });
 
 /**
  * Renders the table of intent data.
@@ -19,6 +21,11 @@ export default function IntentTable({
 }) {
   const [expandedIntent, setExpandedIntent] = useState(null);
   const [insightsExpanded, setInsightsExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // If the wallet isn't connected, don't show anything
   if (!clientConnected) return null;
@@ -113,15 +120,143 @@ export default function IntentTable({
               </div>
               {/* End Collapse */}
 
-              {/* Mobile Card View */}
-              <div className="sm:hidden">
-                {isLoading ? (
-                  <div className="p-4 flex justify-center">
-                    <div className="animate-spin size-6 border-t-2 border-blue-600 rounded-full"></div>
-                  </div>
-                ) : (
-                  <ul className="divide-y divide-gray-200">
-                    {intentCreatedEvents.map((intent) => {
+              <ClientOnly>
+                {/* Mobile Card View */}
+                <div className="sm:hidden">
+                  {isLoading ? (
+                    <div className="p-4 flex justify-center">
+                      <div className="animate-spin size-6 border-t-2 border-blue-600 rounded-full"></div>
+                    </div>
+                  ) : (
+                    <ul className="divide-y divide-gray-200">
+                      {intentCreatedEvents.map((intent) => {
+                        // Convert Wei to Ether
+                        const finalPriceInEther = Number(intent.deposit) / 10 ** 18;
+                        // Convert Ether to USD
+                        const finalPriceInUSD = finalPriceInEther * ethUsdRate;
+
+                        const isIntentFulfilledValue = fulfilledStatuses?.[intent.intentId] ?? false;
+                        const remainingTime = remainingTimes[intent.intentId] || 'Calculating...';
+
+                        return (
+                          <li key={intent.intentId.toString()} className="p-4 border-b border-gray-200 last:border-0">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="font-mono text-sm text-blue-600">
+                                  #{intent.intentId}
+                                </span>
+                                <p className="text-sm text-gray-600 mt-1">
+                                  ${finalPriceInUSD.toFixed(2)}
+                                </p>
+                              </div>
+                              <button 
+                                onClick={() => toggleExpandedIntent(intent.intentId.toString())}
+                                className="text-gray-500"
+                              >
+                                <ChevronRightIcon 
+                                  size={20} 
+                                  className={`transition-transform ${expandedIntent === intent.intentId.toString() ? 'rotate-90' : ''}`}
+                                />
+                              </button>
+                            </div>
+                            
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <span
+                                className={`py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium 
+                                  ${
+                                    isIntentFulfilledValue
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-green-100 text-green-800'
+                                  } 
+                                  rounded-full`}
+                              >
+                                {isIntentFulfilledValue ? 'Fulfilled' : 'Unfulfilled'}
+                              </span>
+                              <span
+                                className={`py-1 px-1.5 text-xs font-medium rounded-full 
+                                  ${
+                                    remainingTime === 'Expired'
+                                      ? 'bg-gray-300 text-gray-700'
+                                      : 'bg-cyan-100 text-cyan-800'
+                                  }`}
+                              >
+                                {remainingTime}
+                              </span>
+                            </div>
+                            
+                            {expandedIntent === intent.intentId.toString() && (
+                              <div className="mt-3 pt-3 border-t border-gray-100">
+                                <p className="text-xs text-gray-500">Created: {intent.createdAt}</p>
+                                <button
+                                  type="button"
+                                  onClick={() => handleItemSelect(intent)}
+                                  className="mt-2 py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none text-xs"
+                                >
+                                  <ScanQrCodeIcon size={14} />
+                                  View details
+                                </button>
+                              </div>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
+
+                {/* Desktop Table View */}
+                <table className="hidden sm:table min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-start">
+                        <div className="flex items-center gap-x-2">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                            Intent number
+                          </span>
+                        </div>
+                      </th>
+
+                      <th scope="col" className="px-6 py-3 text-start">
+                        <div className="flex items-center gap-x-2">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                            Amount
+                          </span>
+                        </div>
+                      </th>
+
+                      <th scope="col" className="px-6 py-3 text-start">
+                        <div className="flex items-center gap-x-2">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                            Status
+                          </span>
+                        </div>
+                      </th>
+
+                      <th scope="col" className="px-6 py-3 text-start">
+                        <div className="flex items-center gap-x-2">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                            Due
+                          </span>
+                        </div>
+                      </th>
+
+                      <th scope="col" className="px-6 py-3 text-start">
+                        <div className="flex items-center gap-x-2">
+                          <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                            Created
+                          </span>
+                        </div>
+                      </th>
+
+                      <th scope="col" className="px-6 py-3 text-end"></th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="divide-y divide-gray-200">
+                    {isLoading ? (
+                      <TableSkeleton />
+                    ) : (
+                    intentCreatedEvents.map((intent) => {
                       // Convert Wei to Ether
                       const finalPriceInEther = Number(intent.deposit) / 10 ** 18;
                       // Convert Ether to USD
@@ -131,210 +266,84 @@ export default function IntentTable({
                       const remainingTime = remainingTimes[intent.intentId] || 'Calculating...';
 
                       return (
-                        <li key={intent.intentId.toString()} className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <span className="font-mono text-sm text-blue-600">
-                                #{intent.intentId}
-                              </span>
-                              <p className="text-sm text-gray-600 mt-1">
-                                ${finalPriceInUSD.toFixed(2)}
-                              </p>
-                            </div>
-                            <button 
-                              onClick={() => toggleExpandedIntent(intent.intentId.toString())}
-                              className="text-gray-500"
+                        <tr
+                          key={intent.intentId.toString()}
+                          className="bg-white hover:bg-gray-50"
+                        >
+                          <td className="whitespace-nowrap">
+                            <button
+                              type="button"
+                              className="block"
+                              onClick={() => handleItemSelect(intent)}
                             >
-                              <ChevronRightIcon 
-                                size={20} 
-                                className={`transition-transform ${expandedIntent === intent.intentId.toString() ? 'rotate-90' : ''}`}
-                              />
+                              <span className="block px-6 py-2">
+                                <span className="font-mono text-sm text-blue-600">
+                                  #{intent.intentId}
+                                </span>
+                              </span>
                             </button>
-                          </div>
-                          
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            <span
-                              className={`py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium 
-                                ${
-                                  isIntentFulfilledValue
-                                    ? 'bg-red-100 text-red-800'
-                                    : 'bg-green-100 text-green-800'
-                                } 
-                                rounded-full`}
-                            >
-                              {isIntentFulfilledValue ? 'Fulfilled' : 'Unfulfilled'}
-                            </span>
-                            <span
-                              className={`py-1 px-1.5 text-xs font-medium rounded-full 
-                                ${
-                                  remainingTime === 'Expired'
-                                    ? 'bg-gray-300 text-gray-700'
-                                    : 'bg-cyan-100 text-cyan-800'
-                                }`}
-                            >
-                              {remainingTime}
-                            </span>
-                          </div>
-                          
-                          {expandedIntent === intent.intentId.toString() && (
-                            <div className="mt-3 pt-3 border-t border-gray-100">
-                              <p className="text-xs text-gray-500">Created: {intent.createdAt}</p>
-                              <button
-                                type="button"
-                                onClick={() => handleItemSelect(intent)}
-                                className="mt-2 py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none text-xs"
-                              >
-                                <ScanQrCodeIcon size={14} />
-                                View details
-                              </button>
-                            </div>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
-
-              {/* Desktop Table View */}
-              <table className="hidden sm:table min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-start">
-                      <div className="flex items-center gap-x-2">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
-                          Intent number
-                        </span>
-                      </div>
-                    </th>
-
-                    <th scope="col" className="px-6 py-3 text-start">
-                      <div className="flex items-center gap-x-2">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
-                          Amount
-                        </span>
-                      </div>
-                    </th>
-
-                    <th scope="col" className="px-6 py-3 text-start">
-                      <div className="flex items-center gap-x-2">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
-                          Status
-                        </span>
-                      </div>
-                    </th>
-
-                    <th scope="col" className="px-6 py-3 text-start">
-                      <div className="flex items-center gap-x-2">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
-                          Due
-                        </span>
-                      </div>
-                    </th>
-
-                    <th scope="col" className="px-6 py-3 text-start">
-                      <div className="flex items-center gap-x-2">
-                        <span className="text-xs font-semibold uppercase tracking-wide text-gray-800">
-                          Created
-                        </span>
-                      </div>
-                    </th>
-
-                    <th scope="col" className="px-6 py-3 text-end"></th>
-                  </tr>
-                </thead>
-
-                <tbody className="divide-y divide-gray-200">
-                  {isLoading ? (
-                    <TableSkeleton />
-                  ) : (
-                  intentCreatedEvents.map((intent) => {
-                    // Convert Wei to Ether
-                    const finalPriceInEther = Number(intent.deposit) / 10 ** 18;
-                    // Convert Ether to USD
-                    const finalPriceInUSD = finalPriceInEther * ethUsdRate;
-
-                    const isIntentFulfilledValue = fulfilledStatuses?.[intent.intentId] ?? false;
-                    const remainingTime = remainingTimes[intent.intentId] || 'Calculating...';
-
-                    return (
-                      <tr
-                        key={intent.intentId.toString()}
-                        className="bg-white hover:bg-gray-50"
-                      >
-                        <td className="whitespace-nowrap">
-                          <button
-                            type="button"
-                            className="block"
-                            onClick={() => handleItemSelect(intent)}
-                          >
+                          </td>
+                          <td className="whitespace-nowrap">
                             <span className="block px-6 py-2">
-                              <span className="font-mono text-sm text-blue-600">
-                                #{intent.intentId}
+                              <span className="text-sm text-gray-600">
+                                ${finalPriceInUSD.toFixed(2)}
                               </span>
                             </span>
-                          </button>
-                        </td>
-                        <td className="whitespace-nowrap">
-                          <span className="block px-6 py-2">
-                            <span className="text-sm text-gray-600">
-                              ${finalPriceInUSD.toFixed(2)}
-                            </span>
-                          </span>
-                        </td>
-                        <td className="whitespace-nowrap">
-                          <span className="block px-6 py-2">
-                            <span
-                              className={`py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium 
-                                ${
-                                  isIntentFulfilledValue
-                                    ? 'bg-red-100 text-red-800'
-                                    : 'bg-green-100 text-green-800'
-                                } 
-                                rounded-full`}
-                            >
-                              {isIntentFulfilledValue ? 'Fulfilled' : 'Unfulfilled'}
-                            </span>
-                          </span>
-                        </td>
-                        <td className="whitespace-nowrap">
-                          <span className="block px-6 py-2">
-                            <span
-                              className={`py-1 px-1.5 text-xs font-medium rounded-full 
-                                ${
-                                  remainingTime === 'Expired'
-                                    ? 'bg-gray-300 text-gray-700'
-                                    : 'bg-cyan-100 text-cyan-800'
-                                }`}
-                            >
-                              {remainingTime}
-                            </span>
-                          </span>
-                        </td>
-                        <td className="whitespace-nowrap">
-                          <span className="block px-6 py-2">
-                            <span className="text-sm text-gray-600">{intent.createdAt}</span>
-                          </span>
-                        </td>
-                        <td className="whitespace-nowrap">
-                          <button
-                            type="button"
-                            onClick={() => handleItemSelect(intent)}
-                            className="block"
-                          >
-                            <span className="px-6 py-1.5">
-                              <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm">
-                                <ScanQrCodeIcon size={15} />
-                                View
+                          </td>
+                          <td className="whitespace-nowrap">
+                            <span className="block px-6 py-2">
+                              <span
+                                className={`py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium 
+                                  ${
+                                    isIntentFulfilledValue
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-green-100 text-green-800'
+                                  } 
+                                  rounded-full`}
+                              >
+                                {isIntentFulfilledValue ? 'Fulfilled' : 'Unfulfilled'}
                               </span>
                             </span>
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  }))}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="whitespace-nowrap">
+                            <span className="block px-6 py-2">
+                              <span
+                                className={`py-1 px-1.5 text-xs font-medium rounded-full 
+                                  ${
+                                    remainingTime === 'Expired'
+                                      ? 'bg-gray-300 text-gray-700'
+                                      : 'bg-cyan-100 text-cyan-800'
+                                  }`}
+                              >
+                                {remainingTime}
+                              </span>
+                            </span>
+                          </td>
+                          <td className="whitespace-nowrap">
+                            <span className="block px-6 py-2">
+                              <span className="text-sm text-gray-600">{intent.createdAt}</span>
+                            </span>
+                          </td>
+                          <td className="whitespace-nowrap">
+                            <button
+                              type="button"
+                              onClick={() => handleItemSelect(intent)}
+                              className="block"
+                            >
+                              <span className="px-6 py-1.5">
+                                <span className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm">
+                                  <ScanQrCodeIcon size={15} />
+                                  View
+                                </span>
+                              </span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    }))}
+                  </tbody>
+                </table>
+              </ClientOnly>
             </div>
           </div>
         </div>
