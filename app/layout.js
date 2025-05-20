@@ -145,17 +145,17 @@ export default function RootLayout({ children }) {
                       color: #ffffff !important;
                       border-color: #4b5563 !important;
                     }
-                    .dark button:not(.text-blue-500) {
+                    /* Only make dark text white, not all text */
+                    .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
                       color: #ffffff !important;
                     }
-                    .dark p, .dark span, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark label {
+                    /* Target specific dark text classes */
+                    .dark .text-gray-700, .dark .text-gray-800, .dark .text-gray-900 {
                       color: #ffffff !important;
                     }
-                    .dark .text-gray-500, .dark .text-gray-600, .dark .text-gray-700, .dark .text-gray-800 {
-                      color: #ffffff !important;
-                    }
-                    .dark .font-semibold, .dark .font-bold {
-                      color: #ffffff !important;
+                    /* Keep lighter grays as is but brighten slightly for contrast */
+                    .dark .text-gray-500, .dark .text-gray-600 {
+                      color: #d1d5db !important;
                     }
                   \`;
                   document.head.appendChild(style);

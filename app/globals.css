@@ -79,10 +79,20 @@ body.dark-mode {
   color-scheme: dark;
 }
 
-.dark p, .dark span, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark label, 
-.dark .text-gray-500, .dark .text-gray-600, .dark .text-gray-700, .dark .text-gray-800, 
-.dark .font-semibold, .dark .font-bold {
+/* Only target dark gray and black text colors to make them white */
+.dark .text-gray-700, 
+.dark .text-gray-800, 
+.dark .text-gray-900,
+.dark .text-black,
+.dark .font-semibold:not(.text-blue-500):not(.text-red-500):not(.text-green-500), 
+.dark .font-bold:not(.text-blue-500):not(.text-red-500):not(.text-green-500) {
   color: white !important;
+}
+
+/* Preserve gray text with lighter shade in dark mode */
+.dark .text-gray-500, 
+.dark .text-gray-600 {
+  color: #d1d5db !important; /* Light gray for better contrast */
 }
 
 /* Prevent input field zoom on mobile devices */
