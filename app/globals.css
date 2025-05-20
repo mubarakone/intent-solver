@@ -23,17 +23,17 @@
 
 .dark {
   --background: #0a0a0a;
-  --foreground: #ededed;
+  --foreground: #ffffff;
   --primary: #0284c7;
-  --primary-foreground: #f8fafc;
+  --primary-foreground: #ffffff;
   --secondary: #1f2937;
-  --secondary-foreground: #f9fafb;
+  --secondary-foreground: #ffffff;
   --muted: #1f2937;
-  --muted-foreground: #9ca3af;
+  --muted-foreground: #ffffff;
   --accent: #082f49;
-  --accent-foreground: #7dd3fc;
+  --accent-foreground: #ffffff;
   --card: #111827;
-  --card-foreground: #f9fafb;
+  --card-foreground: #ffffff;
   --border: #374151;
   --input: #374151;
   --ring: #0ea5e9;
@@ -44,17 +44,17 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #ffffff;
     --primary: #0284c7;
-    --primary-foreground: #f8fafc;
+    --primary-foreground: #ffffff;
     --secondary: #1f2937;
-    --secondary-foreground: #f9fafb;
+    --secondary-foreground: #ffffff;
     --muted: #1f2937;
-    --muted-foreground: #9ca3af;
+    --muted-foreground: #ffffff;
     --accent: #082f49;
-    --accent-foreground: #7dd3fc;
+    --accent-foreground: #ffffff;
     --card: #111827;
-    --card-foreground: #f9fafb;
+    --card-foreground: #ffffff;
     --border: #374151;
     --input: #374151;
     --ring: #0ea5e9;
@@ -72,6 +72,17 @@ body {
 body.dark-mode {
   background-color: var(--background);
   color: var(--foreground);
+}
+
+/* Enforce all text to be white in dark mode */
+.dark *, body.dark-mode * {
+  color-scheme: dark;
+}
+
+.dark p, .dark span, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark label, 
+.dark .text-gray-500, .dark .text-gray-600, .dark .text-gray-700, .dark .text-gray-800, 
+.dark .font-semibold, .dark .font-bold {
+  color: white !important;
 }
 
 /* Prevent input field zoom on mobile devices */

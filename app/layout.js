@@ -132,7 +132,7 @@ export default function RootLayout({ children }) {
                   style.textContent = \`
                     html.dark, body.dark-mode {
                       background-color: #0a0a0a !important;
-                      color: #ededed !important;
+                      color: #ffffff !important;
                     }
                     .dark .bg-white {
                       background-color: #111827 !important;
@@ -142,11 +142,20 @@ export default function RootLayout({ children }) {
                     }
                     .dark input, .dark select, .dark textarea {
                       background-color: #374151 !important;
-                      color: #f9fafb !important;
+                      color: #ffffff !important;
                       border-color: #4b5563 !important;
                     }
                     .dark button:not(.text-blue-500) {
-                      color: #e5e7eb !important;
+                      color: #ffffff !important;
+                    }
+                    .dark p, .dark span, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark label {
+                      color: #ffffff !important;
+                    }
+                    .dark .text-gray-500, .dark .text-gray-600, .dark .text-gray-700, .dark .text-gray-800 {
+                      color: #ffffff !important;
+                    }
+                    .dark .font-semibold, .dark .font-bold {
+                      color: #ffffff !important;
                     }
                   \`;
                   document.head.appendChild(style);

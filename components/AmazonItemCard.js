@@ -82,11 +82,11 @@ export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, 
             </a>
           </div>
         </div>
-        <p className="text-gray-700 dark:!text-gray-300 text-xs mb-3">{truncateTitle(metadata.description, 80)}</p>
+        <p className="text-gray-700 dark:!text-white text-xs mb-3">{truncateTitle(metadata.description, 80)}</p>
         <div className="flex justify-between items-center">
-          <p className="text-gray-600 dark:!text-gray-200 font-bold text-lg">{calculateTotalPrice()}</p>
+          <p className="text-gray-600 dark:!text-white font-bold text-lg">{calculateTotalPrice()}</p>
           <div className="flex items-center">
-            <label htmlFor="quantity-mobile" className="mr-2 text-xs font-medium text-gray-700 dark:!text-gray-300">
+            <label htmlFor="quantity-mobile" className="mr-2 text-xs font-medium text-gray-700 dark:!text-white">
               Qty:
             </label>
             <select
@@ -110,11 +110,11 @@ export default function AmazonItemCard({ metadata, onDiscard, onQuantityChange, 
         <img src={metadata.image || "/placeholder.svg"} alt={metadata.title} className="w-20 h-20 object-cover mr-4 rounded-md" />
         <div className="flex-1">
           <a href={metadata.url} className="text-blue-500 dark:!text-blue-400 text-xl underline font-semibold" target="_blank">{metadata.title}</a>
-          <p className="text-gray-700 dark:!text-gray-300 flex-grow">{metadata.description}</p>
+          <p className="text-gray-700 dark:!text-white flex-grow">{metadata.description}</p>
           <div className="mt-3 flex justify-between items-center">
-            <p className="text-gray-600 dark:!text-gray-200 font-bold text-xl">{calculateTotalPrice()}</p>
+            <p className="text-gray-600 dark:!text-white font-bold text-xl">{calculateTotalPrice()}</p>
             <div className="flex items-center ml-4">
-              <label htmlFor="quantity-desktop" className="mr-2 text-sm font-medium text-gray-700 dark:!text-gray-300">
+              <label htmlFor="quantity-desktop" className="mr-2 text-sm font-medium text-gray-700 dark:!text-white">
                 Qty:
               </label>
               <select
