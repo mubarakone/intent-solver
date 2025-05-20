@@ -35,21 +35,32 @@ const getQueryClient = () => new QueryClient();
 function ThemeInitScript() {
   useEffect(() => {
     // This will run only once on the client side
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = prefersDark ? 'dark' : 'light';
+    function applyTheme() {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = prefersDark ? 'dark' : 'light';
+      
+      // Force remove and add the theme class to ensure proper application
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+      
+      // Apply dark mode to the entire document by adding/removing class from html element
+      if (theme === 'dark') {
+        document.documentElement.style.colorScheme = 'dark';
+        document.body.classList.add('dark-mode');
+      } else {
+        document.documentElement.style.colorScheme = 'light';
+        document.body.classList.remove('dark-mode');
+      }
+    }
     
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(theme);
+    // Apply theme immediately
+    applyTheme();
     
     // Listen for changes in color scheme preference
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e) => {
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(e.matches ? 'dark' : 'light');
-    };
+    mediaQuery.addEventListener('change', applyTheme);
     
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', applyTheme);
   }, []);
   
   return null;
@@ -65,7 +76,7 @@ export default function RootLayout({ children }) {
   const initialTheme = systemPrefersDark ? 'dark' : 'light';
 
   return (
-    <html lang="en" className={`antialiased ${initialTheme}`}>
+    <html lang="en" className={`antialiased ${initialTheme}`} data-theme={initialTheme} style={{colorScheme: initialTheme}}>
       <head>
         <title>Storerunner</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
@@ -105,6 +116,46 @@ export default function RootLayout({ children }) {
           src="https://esm.sh/@farcaster/frame-sdk" 
           strategy="afterInteractive"
           type="module"
+        />
+        
+        {/* Force dark mode styles */}
+        <Script
+          id="dark-mode-force-style"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Check if dark mode is preferred
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                  // Create and append a style element with force overrides for dark mode
+                  const style = document.createElement('style');
+                  style.textContent = \`
+                    html.dark, body.dark-mode {
+                      background-color: #0a0a0a !important;
+                      color: #ededed !important;
+                    }
+                    .dark .bg-white {
+                      background-color: #111827 !important;
+                    }
+                    .dark .bg-gray-100, .dark .bg-gray-50 {
+                      background-color: #000000 !important;
+                    }
+                    .dark input, .dark select, .dark textarea {
+                      background-color: #374151 !important;
+                      color: #f9fafb !important;
+                      border-color: #4b5563 !important;
+                    }
+                    .dark button:not(.text-blue-500) {
+                      color: #e5e7eb !important;
+                    }
+                  \`;
+                  document.head.appendChild(style);
+                  document.documentElement.classList.add('dark');
+                  document.body.classList.add('dark-mode');
+                }
+              })();
+            `
+          }}
         />
       </head>
       <body

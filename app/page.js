@@ -60,11 +60,11 @@ export default function Page() {
         <FarcasterFrameMeta frameData={frameEmbed} />
       </ClientOnly>
       
-      <main className="min-h-screen flex flex-col bg-gray-100 dark:bg-black py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <main className="min-h-screen flex flex-col bg-gray-100 dark:!bg-black py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
         {/* Header with mobile optimization */}
         <div className="relative flex flex-col sm:flex-row items-center py-4 mb-4 sm:mb-6">
           {/* Heading - centered on mobile, left-aligned on larger screens */}
-          <h1 className="text-3xl sm:text-4xl font-bold mx-auto sm:mx-0 dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-bold mx-auto sm:mx-0 dark:!text-white">
             Storerunner
           </h1>
 
@@ -84,11 +84,11 @@ export default function Page() {
         </div>
 
         {/* Tab navigation at the bottom of the screen */}
-        <div className="fixed bottom-0 inset-x-0 flex justify-around bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-2 sm:p-3 shadow-lg">
+        <div className="fixed bottom-0 inset-x-0 flex justify-around bg-white dark:!bg-gray-800 border-t border-gray-200 dark:!border-gray-700 p-2 sm:p-3 shadow-lg">
           <button
             onClick={() => setActiveTab('Home')}
             className={`flex flex-col items-center justify-center px-4 py-2 rounded-md ${
-              activeTab === 'Home' ? 'text-blue-500' : 'text-gray-500 dark:text-gray-400'
+              activeTab === 'Home' ? 'text-blue-500' : 'text-gray-500 dark:!text-gray-400'
             }`}
           >
             <span className="text-sm">Home</span>
@@ -96,7 +96,7 @@ export default function Page() {
           <button
             onClick={() => setActiveTab('History')}
             className={`flex flex-col items-center justify-center px-4 py-2 rounded-md ${
-              activeTab === 'History' ? 'text-blue-500' : 'text-gray-500 dark:text-gray-400'
+              activeTab === 'History' ? 'text-blue-500' : 'text-gray-500 dark:!text-gray-400'
             }`}
           >
             <span className="text-sm">History</span>
