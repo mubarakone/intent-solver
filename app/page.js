@@ -59,7 +59,7 @@ export default function Page() {
       <ClientOnly>
         <FarcasterFrameMeta frameData={frameEmbed} />
       </ClientOnly>
-      
+
       <main className="min-h-screen flex flex-col bg-gray-100 dark:!bg-black py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
         {/* Header with mobile optimization */}
         <div className="relative flex flex-col sm:flex-row items-center py-4 mb-4 sm:mb-6">
@@ -79,28 +79,78 @@ export default function Page() {
         </div>
 
         {/* Content wrapper with flex layout */}
-        <div className="flex-1 flex flex-col">
-          {renderTab()}
-        </div>
+        <div className="flex flex-col flex-grow">
+          {/* Mobile-friendly tabs navigation - now sticky */}
+          <div className="sticky top-0 z-10 bg-gray-100 dark:!bg-black -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+            <div className="border-b border-gray-200">
+              <nav
+                className="flex gap-x-1 overflow-x-auto hide-scrollbar"
+                aria-label="Tabs"
+                role="tablist"
+                aria-orientation="horizontal"
+              >
+                {/* Tab buttons remain unchanged */}
+                <button
+                  type="button"
+                  className={`
+                  min-w-0 flex-1 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium text-center 
+                  border-b-2 
+                  ${
+                    activeTab === "Home"
+                      ? "border-blue-600 text-blue-600 bg-white dark:!bg-gray-800"
+                      : "border-transparent text-gray-500 hover:text-gray-700 bg-gray-50 dark:!bg-gray-900 dark:hover:!bg-gray-800"
+                  } 
+                  rounded-t-lg
+                  focus:outline-none
+                `}
+                  id="card-type-tab-item-1"
+                  aria-selected={activeTab === "Home"}
+                  data-hs-tab="#card-type-tab-preview"
+                  aria-controls="card-type-tab-preview"
+                  role="tab"
+                  onClick={() => setActiveTab("Home")}
+                >
+                  Home
+                </button>
 
-        {/* Tab navigation at the bottom of the screen */}
-        <div className="fixed bottom-0 inset-x-0 flex justify-around bg-white dark:!bg-gray-800 border-t border-gray-200 dark:!border-gray-700 p-2 sm:p-3 shadow-lg">
-          <button
-            onClick={() => setActiveTab('Home')}
-            className={`flex flex-col items-center justify-center px-4 py-2 rounded-md ${
-              activeTab === 'Home' ? 'text-blue-500' : 'text-gray-500 dark:!text-gray-400'
-            }`}
-          >
-            <span className="text-sm">Home</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('History')}
-            className={`flex flex-col items-center justify-center px-4 py-2 rounded-md ${
-              activeTab === 'History' ? 'text-blue-500' : 'text-gray-500 dark:!text-gray-400'
-            }`}
-          >
-            <span className="text-sm">History</span>
-          </button>
+                <button
+                  type="button"
+                  className={`
+                  min-w-0 flex-1 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium text-center 
+                  border-b-2
+                  ${
+                    activeTab === "History"
+                      ? "border-blue-600 text-blue-600 bg-white dark:!bg-gray-800"
+                      : "border-transparent text-gray-500 hover:text-gray-700 bg-gray-50 dark:!bg-gray-900 dark:hover:!bg-gray-800"
+                  }
+                  rounded-t-lg
+                  focus:outline-none
+                `}
+                  id="card-type-tab-item-2"
+                  aria-selected={activeTab === "History"}
+                  data-hs-tab="#card-type-tab-2"
+                  aria-controls="card-type-tab-2"
+                  role="tab"
+                  onClick={() => setActiveTab("History")}
+                >
+                  History
+                </button>
+              </nav>
+            </div>
+          </div>
+
+          {/* Tab content with padding to account for sticky header */}
+          <div className="mt-4 sm:mt-6 flex-grow">{renderTab()}</div>
+
+          {/* Solver link always appears directly below tab content */}
+          <div className="mt-6 sm:mt-8 text-center">
+            <a
+              href="/solver"
+              className="text-blue-500 hover:text-blue-700 text-sm sm:text-base"
+            >
+              Are you a Solver? Log In Here
+            </a>
+          </div>
         </div>
       </main>
     </>
